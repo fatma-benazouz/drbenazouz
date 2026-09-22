@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, Maximize2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import step1 from "@/assets/tutorial-step1.png.asset.json";
-import step2 from "@/assets/tutorial-step2.png.asset.json";
-import step3 from "@/assets/tutorial-step3.png.asset.json";
-import step4 from "@/assets/tutorial-step4.png.asset.json";
+import step1 from "@/assets/tutorial-step1.webp";
+import step2 from "@/assets/tutorial-step2.webp";
+import step3 from "@/assets/tutorial-step3.webp";
+import step4 from "@/assets/tutorial-step4.webp";
 import { cn } from "@/lib/utils";
 
 // GoodX / myGC booking portal. Replace this single URL if the practice diary changes.
@@ -206,13 +206,13 @@ function BookPage() {
               <figure key={step.title} className="fade-up" style={{ animationDelay: `${index * 90}ms` }}>
                 <button
                   type="button"
-                  onClick={() => setLightbox({ image: step.image.url, alt: step.alt })}
+                  onClick={() => setLightbox({ image: step.image, alt: step.alt })}
                   aria-label={`Enlarge screenshot: ${step.alt}`}
                   className="group relative block w-full cursor-zoom-in border border-hairline bg-white transition-colors duration-300 hover:border-blue motion-reduce:transition-none"
                 >
                   <span className="block overflow-hidden">
                     <img
-                      src={step.image.url}
+                      src={step.image}
                       alt={step.alt}
                       loading="lazy"
                       className="w-full transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"

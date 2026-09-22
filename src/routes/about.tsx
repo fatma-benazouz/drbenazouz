@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import aboutImage from "@/assets/hichem-about.jpg.asset.json";
+import aboutImage from "@/assets/hichem-about.jpg";
 import portrait from "@/assets/dr-azouz-portrait.jpg";
 import clinic from "@/assets/clinic-interior.jpg";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -40,7 +40,7 @@ function About() {
         <div className="mx-auto grid max-w-6xl gap-9 px-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-7">
           <Reveal>
             <img
-              src={aboutImage.url}
+              src={aboutImage}
               alt="Portrait of Dr Ben Azouz in his consulting rooms"
               width={1200}
               height={1408}

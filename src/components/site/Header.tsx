@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import practiceLogo from "@/assets/practice-logo.png.asset.json";
+import practiceLogo from "@/assets/practice-logo.png";
 import { PRACTICE } from "@/lib/site";
 
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ export function Header() {
       <div className="mx-auto grid h-17 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 lg:px-7">
         <Link to="/" className="flex min-w-0 items-center gap-2.5" onClick={() => setOpen(false)}>
           <img
-            src={practiceLogo.url}
+            src={practiceLogo}
             alt=""
             aria-hidden="true"
             className="h-6 w-6 shrink-0 object-contain sm:h-7 sm:w-7"

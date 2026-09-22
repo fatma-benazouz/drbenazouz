@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import practiceLogo from "@/assets/practice-logo.png.asset.json";
+import practiceLogo from "@/assets/practice-logo.png";
 import { PRACTICE } from "@/lib/site";
 
 export function Footer() {
@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-[1fr_auto_auto] md:gap-12">
           <div>
             <div className="flex items-center gap-2.5">
-              <img src={practiceLogo.url} alt="" aria-hidden="true" className="h-10 w-10 shrink-0 object-contain" />
+              <img src={practiceLogo} alt="" aria-hidden="true" className="h-10 w-10 shrink-0 object-contain" />
               <div>
                 <p className="font-display text-xl text-ink">Dr Ben Azouz MH</p>
                 <p className="mt-0.5 text-[0.8125rem]">General Practitioner</p>

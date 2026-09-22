@@ -1,8 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-import heroAsset from "@/assets/hichem-hero.jpg.asset.json";
-import aboutImage from "@/assets/hichem-about.jpg.asset.json";
+import heroAsset from "@/assets/hichem-hero.jpg";
+import aboutImage from "@/assets/hichem-about.jpg";
 import heroImage from "@/assets/dr-azouz-hero.jpg";
 import portrait from "@/assets/dr-azouz-portrait.jpg";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -44,7 +44,7 @@ function Home() {
               Modern medicine, built around how you actually live.
             </h1>
             <p className="mt-5 max-w-lg text-[0.9rem] leading-relaxed text-grey sm:text-base">
-              Primary care, chronic condition management and metabolic health for professionals who need a doctor who
+zsh:1: command not found: wq
               sees the whole picture - not just the next appointment. Quality care for French-speakers in Johannesburg
               seeking an appointment with the doctor who serves as medical advisor to the French Consulate General.
             </p>
@@ -59,7 +59,7 @@ function Home() {
           </div>
           <div className="relative min-h-[24rem] overflow-hidden lg:min-h-[31rem]">
             <img
-              src={aboutImage.url}
+              src={aboutImage}
               alt="Dr Ben Azouz in his Sandton consulting rooms"
               width={1408}
               height={1600}
@@ -115,7 +115,7 @@ function Home() {
         <div className="mx-auto grid max-w-6xl items-start gap-9 px-5 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:px-7">
           <Reveal>
             <img
-              src={heroAsset.url}
+              src={heroAsset}
               alt="Dr Ben Azouz against the Sandton skyline"
               width={1200}
               height={1408}

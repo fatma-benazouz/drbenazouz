@@ -3,7 +3,7 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
-import brandLogo from "@/assets/dr-ben-azouz-dark-brand.png.asset.json";
+import brandLogo from "@/assets/dr-ben-azouz-dark-brand.png";
 import { InvoiceDocument, type InvoiceDocData } from "@/components/admin/InvoiceDocument";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -125,7 +125,7 @@ export function InvoiceForm({
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
   const logoSrc = useMemo(() => {
-    const src = settings.logo_url ?? brandLogo.url;
+    const src = settings.logo_url ?? brandLogo;
     if (src.startsWith("/") && typeof window !== "undefined") return `${window.location.origin}${src}`;
     return src;
   }, [settings.logo_url]);
