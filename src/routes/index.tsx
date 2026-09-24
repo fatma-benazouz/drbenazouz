@@ -44,8 +44,7 @@ function Home() {
               Modern medicine, built around how you actually live.
             </h1>
             <p className="mt-5 max-w-lg text-[0.9rem] leading-relaxed text-grey sm:text-base">
-zsh:1: command not found: wq
-              sees the whole picture - not just the next appointment. Quality care for French-speakers in Johannesburg
+              Dr Ben Azouz sees the whole picture - not just the next appointment. Quality care for French-speakers in Johannesburg
               seeking an appointment with the doctor who serves as medical advisor to the French Consulate General.
             </p>
             <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
