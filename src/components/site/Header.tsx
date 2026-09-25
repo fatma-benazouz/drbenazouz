@@ -66,7 +66,11 @@ export function Header() {
             ))}
           </nav>
 
-          <Button asChild size="sm" className="hidden h-8 px-3.5 text-[0.6875rem] sm:inline-flex">
+          <Button
+            asChild
+            size="sm"
+            className="hidden h-8 px-3.5 text-[0.6875rem] transition-all hover:-translate-y-0.5 sm:inline-flex"
+          >
             <Link to="/book">Book a consultation</Link>
           </Button>
 
@@ -117,7 +121,7 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <Button asChild className="my-5 w-full">
+          <Button asChild className="my-5 w-full transition-all hover:-translate-y-0.5">
             <Link to="/book" onClick={() => setOpen(false)}>
               Book an Appointment
             </Link>

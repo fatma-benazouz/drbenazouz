@@ -6,6 +6,7 @@ import step1 from "@/assets/tutorial-step1.webp";
 import step2 from "@/assets/tutorial-step2.webp";
 import step3 from "@/assets/tutorial-step3.webp";
 import step4 from "@/assets/tutorial-step4.webp";
+import { Reveal } from "@/components/site/Reveal";
 import { cn } from "@/lib/utils";
 
 // GoodX / myGC booking portal. Replace this single URL if the practice diary changes.
@@ -79,7 +80,7 @@ function BookNowButton({ className }: { className?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-flex items-center justify-center gap-2 bg-blue px-6 py-3 text-[0.8125rem] font-medium text-white transition-colors hover:bg-ink",
+        "inline-flex items-center justify-center gap-2 bg-blue px-6 py-3 text-[0.8125rem] font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-ink",
         className,
       )}
     >
@@ -136,7 +137,7 @@ function BookPage() {
       {/* Hero + primary CTA panel */}
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-5 pb-10 pt-10 lg:px-7 lg:pb-14 lg:pt-16">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl fade-up">
             <p className="text-[0.8125rem] font-semibold text-blue">Book a Consultation</p>
             <h1 className="mt-3 text-[clamp(2.25rem,4vw+0.5rem,3.75rem)] leading-[1.02] text-ink">
               Booking takes two minutes, on a secure external system.
@@ -147,7 +148,7 @@ function BookPage() {
             </p>
           </div>
 
-          <div className="mt-9 bg-ink text-white">
+          <div className="mt-9 bg-ink text-white fade-up" style={{ animationDelay: "100ms" }}>
             <div className="grid gap-6 p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-10">
               <div>
                 <h2 className="font-display text-2xl leading-tight text-white sm:text-3xl">Ready to book?</h2>
@@ -162,7 +163,7 @@ function BookPage() {
             </div>
           </div>
 
-          <p className="mt-5 max-w-2xl text-[0.8125rem] leading-relaxed text-grey">
+          <p className="mt-5 max-w-2xl text-[0.8125rem] leading-relaxed text-grey fade-up" style={{ animationDelay: "160ms" }}>
             <span className="font-semibold text-ink">First time booking with us?</span> On the next screen, choose
             "Book without an account" - you don't need to register or remember a password. See the{" "}
             <a href="#how-it-works" className="font-semibold text-blue underline underline-offset-2">
@@ -181,7 +182,7 @@ function BookPage() {
               key={item}
               className={`py-4 text-[0.8125rem] font-medium text-ink ${index ? "border-t border-hairline sm:border-l sm:border-t-0 sm:pl-6" : ""} ${index < 2 ? "sm:pr-6" : ""}`}
             >
-              {item}
+              <Reveal delay={index * 90}>{item}</Reveal>
             </li>
           ))}
         </ul>

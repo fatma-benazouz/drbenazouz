@@ -38,7 +38,7 @@ function About() {
 
       <section className="bg-background py-11 lg:py-16">
         <div className="mx-auto grid max-w-6xl gap-9 px-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-7">
-          <Reveal>
+          <Reveal direction="left">
             <img
               src={aboutImage}
               alt="Portrait of Dr Ben Azouz in his consulting rooms"
@@ -69,7 +69,7 @@ function About() {
             </dl>
           </Reveal>
 
-          <Reveal delay={100}>
+          <Reveal direction="right" delay={100}>
             <div className="space-y-4 text-[0.9rem] leading-relaxed text-grey">
               <p className="text-base text-ink">
                 Dr Ben Azouz is a general practitioner dedicated to comprehensive, compassionate primary health care. He
