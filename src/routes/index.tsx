@@ -61,13 +61,13 @@ function Home() {
               </Button>
             </div>
           </div>
-          <div className="relative min-h-[24rem] overflow-hidden lg:min-h-[31rem] fade-up" style={{ animationDelay: "120ms" }}>
+          <div className="fade-up" style={{ animationDelay: "120ms" }}>
             <img
               src={aboutImage}
               alt="Dr Ben Azouz in his Sandton consulting rooms"
-              width={1408}
-              height={1600}
-              className="absolute inset-0 h-full w-full object-cover object-[65%_center]"
+              width={1200}
+              height={1408}
+              className="aspect-[4/5] w-full object-cover"
             />
           </div>
         </div>
@@ -120,14 +120,14 @@ function Home() {
 
       <section className="border-y border-hairline bg-white py-14 lg:py-22">
         <div className="mx-auto grid max-w-6xl items-start gap-9 px-5 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:px-7">
-          <Reveal direction="left">
+          <Reveal direction="left" className="relative min-h-[24rem] overflow-hidden lg:min-h-[31rem]">
             <img
               src={heroAsset}
               alt="Dr Ben Azouz against the Sandton skyline"
-              width={1200}
-              height={1408}
+              width={1408}
+              height={1600}
               loading="lazy"
-              className="aspect-[4/5] w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover object-[65%_center]"
             />
           </Reveal>
           <Reveal direction="right" delay={100}>
