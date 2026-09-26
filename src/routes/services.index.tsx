@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { CtaBand } from "@/components/site/CtaBand";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceIcon } from "@/components/site/ServiceIcon";
 import { SERVICES } from "@/lib/site";
 
 export const Route = createFileRoute("/services/")({
@@ -43,9 +44,12 @@ function ServicesHub() {
                   params={{ slug: service.slug }}
                   className="group grid gap-3 border-t border-hairline py-6 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)_auto] md:gap-8"
                 >
-                  <div>
-                    <h2 className="text-xl leading-tight text-ink group-hover:text-blue">{service.title}</h2>
-                    {service.comingSoon ? <p className="mt-2 text-xs font-medium text-blue">Coming soon</p> : null}
+                  <div className="flex items-center gap-4">
+                    <ServiceIcon name={service.icon} />
+                    <div>
+                      <h2 className="text-xl leading-tight text-ink group-hover:text-blue">{service.title}</h2>
+                      {service.comingSoon ? <p className="mt-2 text-xs font-medium text-blue">Coming soon</p> : null}
+                    </div>
                   </div>
                   <p className="text-[0.8125rem] leading-relaxed text-grey">{service.short}</p>
                   <span className="inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-blue">

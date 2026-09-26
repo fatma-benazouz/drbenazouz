@@ -16,8 +16,7 @@ export function Footer() {
               </div>
             </div>
             <p className="mt-3 max-w-sm text-[0.8125rem] leading-relaxed">
-              Personalised and preventative general practice for executives, professionals and families in Sandton
-              Central.
+              Personalised and preventative general practice for executives, professionals and families in Sandton.
             </p>
           </div>
 

@@ -7,6 +7,7 @@ import heroImage from "@/assets/dr-azouz-hero.jpg";
 import portrait from "@/assets/dr-azouz-portrait.jpg";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceIcon } from "@/components/site/ServiceIcon";
 import { Button } from "@/components/ui/button";
 import { JOURNEY, PRACTICE, SERVICES } from "@/lib/site";
 
@@ -105,7 +106,10 @@ function Home() {
                   params={{ slug: service.slug }}
                   className="group grid gap-3 border-t border-hairline py-5 transition-colors hover:text-blue md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.8fr)_auto] md:items-start md:gap-8"
                 >
-                  <h3 className="text-xl leading-tight text-ink group-hover:text-blue">{service.title}</h3>
+                  <div className="flex items-center gap-4">
+                    <ServiceIcon name={service.icon} />
+                    <h3 className="text-xl leading-tight text-ink group-hover:text-blue">{service.title}</h3>
+                  </div>
                   <p className="text-[0.8125rem] leading-relaxed text-grey">{service.short}</p>
                   <span className="inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-blue">
                     View service{" "}

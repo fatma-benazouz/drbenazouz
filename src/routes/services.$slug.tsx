@@ -2,6 +2,7 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceIcon } from "@/components/site/ServiceIcon";
 import { Button } from "@/components/ui/button";
 import { SERVICES } from "@/lib/site";
 
@@ -22,7 +23,8 @@ function ServiceDetail() {
     <section className="border-b border-hairline bg-white">
       <div className="mx-auto max-w-6xl px-5 py-11 lg:px-7 lg:py-16">
         <Link to="/services" className="text-[0.8125rem] font-medium text-blue">← All services</Link>
-        <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+        <ServiceIcon name={service.icon} size="lg" className="mt-7 block fade-up" />
+        <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <h1 className="max-w-3xl text-[clamp(2.5rem,4vw+0.5rem,3.75rem)] leading-[0.97] text-ink">{service.title}</h1>
           <div><p className="text-[0.9rem] leading-relaxed text-grey">{service.short}</p>{service.comingSoon ? <p className="mt-3 text-[0.8125rem] font-medium text-blue">Coming soon</p> : null}</div>
         </div>
