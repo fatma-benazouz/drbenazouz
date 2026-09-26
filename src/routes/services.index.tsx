@@ -31,7 +31,7 @@ function ServicesHub() {
     <>
       <PageHero
         title="Care that covers today and protects tomorrow"
-        lead="Everyday primary care, long-term condition management and proactive health optimisation - all under one roof in Sandton Central."
+        lead="Everyday primary care, long-term condition management and proactive health optimisation - all under one roof in Sandton."
       />
       <section className="bg-white py-11 lg:py-16">
         <div className="mx-auto max-w-6xl px-5 lg:px-7">

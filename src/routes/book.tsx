@@ -15,7 +15,7 @@ const BOOKING_URL = "https://mygc.co.za//external/diary/4a5fea7d-be80-419a-a22f-
 const TRUST = [
   "Evidence-based, patient-centred care",
   "Confirmed by the practice within one working day",
-  "Sandton Central, Johannesburg",
+  "Sandown, Sandton, Johannesburg",
 ];
 
 const STEPS = [
@@ -54,11 +54,11 @@ export const Route = createFileRoute("/book")({
       : {},
   head: () => ({
     meta: [
-      { title: "Book an Appointment | Dr Ben Azouz, Sandton Central" },
+      { title: "Book an Appointment | Dr Ben Azouz, Sandton" },
       {
         name: "description",
         content:
-          "Book your appointment with Dr Ben Azouz in Sandton Central through our secure external booking portal. Live availability, instant confirmation, no account needed.",
+          "Book your appointment with Dr Ben Azouz in Sandton through our secure external booking portal. Live availability, instant confirmation, no account needed.",
       },
       { property: "og:title", content: "Book an Appointment | Dr Ben Azouz" },
       {

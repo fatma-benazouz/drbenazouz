@@ -10,16 +10,16 @@ import { PRACTICE, whatsappLink } from "@/lib/site";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact & Directions | Dr Ben Azouz, Sandton Central" },
+      { title: "Contact & Directions | Dr Ben Azouz, Sandton" },
       {
         name: "description",
         content:
-          "Visit Dr Ben Azouz at 135 Daisy Street, Sandton Central, Johannesburg. Call, WhatsApp or email the practice, or book an appointment online.",
+          "Visit Dr Ben Azouz at 135 Daisy St, Sandown, Sandton, Johannesburg. Call, WhatsApp or email the practice, or book an appointment online.",
       },
       { property: "og:title", content: "Contact the practice | Dr Ben Azouz" },
       {
         property: "og:description",
-        content: "135 Daisy Street, Sandton Central, Johannesburg. Call, WhatsApp or book online.",
+        content: "135 Daisy St, Sandown, Sandton, Johannesburg. Call, WhatsApp or book online.",
       },
        { property: "og:type", content: "website" },
        { name: "twitter:card", content: "summary_large_image" },
@@ -38,7 +38,7 @@ function Contact() {
   return (
     <>
       <PageHero
-        title="Sandton Central"
+        title="Sandown, Sandton"
         lead="Easy access. Premium environment. World-class care - in the heart of the business district."
       />
 
@@ -124,8 +124,8 @@ function Contact() {
           <Reveal direction="right" delay={100}>
             <div className="overflow-hidden border border-border">
               <iframe
-                title="Map showing the practice at 135 Daisy Street, Sandton Central"
-                src="https://www.google.com/maps?q=135%20Daisy%20Street%2C%20Sandton%2C%20Johannesburg&output=embed"
+                title="Map showing the practice at 135 Daisy St, Sandown, Sandton"
+                src="https://www.google.com/maps?q=135%20Daisy%20St%2C%20Sandown%2C%20Sandton%2C%20Johannesburg&output=embed"
                 className="h-72 w-full border-0 lg:h-[24rem]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

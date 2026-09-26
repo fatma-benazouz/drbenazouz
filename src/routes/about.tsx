@@ -19,7 +19,7 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About Dr Ben Azouz, MBChB" },
       {
         property: "og:description",
-        content: "Holistic, continuity-focused general practice in Sandton Central. English and French spoken.",
+        content: "Holistic, continuity-focused general practice in Sandton. English and French spoken.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -115,7 +115,7 @@ function About() {
       <section className="border-y border-border">
         <img
           src={clinic}
-          alt="The waiting area at the Sandton Central rooms, with navy panelling and natural light"
+          alt="The waiting area at the Sandton rooms, with navy panelling and natural light"
           width={1600}
           height={1008}
           loading="lazy"

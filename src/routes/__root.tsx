@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Premium, personalised and preventative general practice in Sandton Central. Executive health, metabolic medicine and full family care with Dr Ben Azouz.",
+          "Premium, personalised and preventative general practice in Sandton. Executive health, metabolic medicine and full family care with Dr Ben Azouz.",
       },
       { name: "author", content: "Corporate Metabolic Clinic" },
       { property: "og:type", content: "website" },

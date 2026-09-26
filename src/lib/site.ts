@@ -3,12 +3,12 @@ export const PRACTICE = {
   doctor: "Dr Ben Azouz",
   tagline: "Your Health. Your Performance. Your Future.",
   strap: "A New Generation of General Practice",
-  addressLine1: "135 Daisy Street",
-  addressLine2: "Sandton Central, Johannesburg",
+  addressLine1: "135 Daisy St",
+  addressLine2: "Sandown, Sandton, Johannesburg",
   phone: "+27 63 662 9349",
   phoneHref: "tel:+27636629349",
   whatsapp: "27636629349",
-  email: "drbenazouz.practice@outlook.com",
+  email: "contact@doctorbenazouz.co.za",
   website: "www.metabolicclinic.co.za",
 } as const;
 
@@ -222,11 +222,11 @@ export const SERVICES: Service[] = [
   {
     slug: "iv-recovery-lounge",
     title: "IV & Recovery Lounge",
-    short: "Clinician-led wellness infusions and recovery support. Opening soon in Sandton Central.",
+    short: "Clinician-led wellness infusions and recovery support. Opening soon in Sandton.",
     icon: "droplets",
     comingSoon: true,
     intro: [
-      "A dedicated, doctor-supervised infusion lounge is opening at our Sandton Central rooms - for hydration, targeted micronutrient support and recovery after illness, travel or heavy training loads.",
+      "A dedicated, doctor-supervised infusion lounge is opening at our Sandton rooms - for hydration, targeted micronutrient support and recovery after illness, travel or heavy training loads.",
       "Every infusion will be prescribed after clinical assessment, not chosen from a menu. Join the waitlist and we will contact you when the lounge opens.",
     ],
     covers: [

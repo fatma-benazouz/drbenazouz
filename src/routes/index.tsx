@@ -17,10 +17,10 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Personalised, preventative general practice for executives, professionals and families in Sandton Central.",
+          "Personalised, preventative general practice for executives, professionals and families in Sandton.",
       },
       { property: "og:title", content: "Dr Ben Azouz | Corporate Metabolic Clinic" },
-      { property: "og:description", content: "Modern general practice and metabolic care in Sandton Central." },
+      { property: "og:description", content: "Modern general practice and metabolic care in Sandton." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
 const TRUST = [
   "Patient-centred, one doctor throughout",
   "Evidence-based, no shortcuts",
-  "Sandton Central, easy access",
+  "Sandown, Sandton, easy access",
 ];
 
 function Home() {
@@ -202,7 +202,7 @@ function Home() {
                 ],
                 ["One doctor over time", "A clinician who knows your history, family and numbers across years."],
                 ["English and French", "Care for Johannesburg's francophone community in their own language."],
-                ["Sandton Central", `${PRACTICE.addressLine1}, with secure parking and easy access.`],
+                ["Sandown, Sandton", `${PRACTICE.addressLine1}, with secure parking and easy access.`],
               ].map(([title, copy]) => (
                 <div key={title} className="grid gap-2 border-t border-hairline py-4 sm:grid-cols-[0.8fr_1.2fr]">
                   <dt className="font-medium text-ink">{title}</dt>
