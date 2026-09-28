@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
 const TRUST = [
   "Patient-centred, one doctor throughout",
   "Evidence-based, no shortcuts",
-  "Sandown, Sandton, easy access",
+  "Sandown, Sandton Central - easy access",
 ];
 
 function Home() {
@@ -45,8 +45,7 @@ function Home() {
               Modern medicine, built around how you actually live.
             </h1>
             <p className="mt-5 max-w-lg text-[0.9rem] leading-relaxed text-grey sm:text-base">
-              Dr Ben Azouz sees the whole picture - not just the next appointment. Quality care for French-speakers in Johannesburg
-              seeking an appointment with the doctor who serves as medical advisor to the French Consulate General.
+              Dr Ben Azouz sees the whole picture - not just the next appointment. Quality care for the Johannesburg community, including French-speakers seeking an appointment with the doctor who serves as medical advisor to the French Consulate General.
             </p>
             <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
               <Button asChild size="lg" className="h-10 px-6 text-[0.8125rem] transition-all hover:-translate-y-0.5">
@@ -205,8 +204,8 @@ function Home() {
                   "Senior clinical judgement behind every assessment and referral decision.",
                 ],
                 ["One doctor over time", "A clinician who knows your history, family and numbers across years."],
-                ["English and French", "Care for Johannesburg's francophone community in their own language."],
-                ["Sandown, Sandton", `${PRACTICE.addressLine1}, with secure parking and easy access.`],
+                ["English and French", "Care for Johannesburg's English and Francophone communities in their home languages."],
+                ["Sandown, Sandton Central", `${PRACTICE.addressLine1}, with secure parking and easy access.`],
               ].map(([title, copy]) => (
                 <div key={title} className="grid gap-2 border-t border-hairline py-4 sm:grid-cols-[0.8fr_1.2fr]">
                   <dt className="font-medium text-ink">{title}</dt>

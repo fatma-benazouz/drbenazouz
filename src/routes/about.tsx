@@ -33,7 +33,7 @@ function About() {
     <>
       <PageHero
         title="Dr Ben Azouz, MBChB"
-        lead="A general practitioner who treats the whole person - and stays with you over time."
+        lead="A general practitioner who focuses on long-term health."
       />
 
       <section className="bg-background py-11 lg:py-16">
@@ -90,12 +90,12 @@ function About() {
               </p>
               <p>
                 As a French-speaking doctor and medical advisor to the French Consulate General, he serves
-                Johannesburg's French-speaking population - because being able to describe how you feel in your own
+                Johannesburg's French-speaking population as well. He believes that being able to describe how you feel in your own
                 language changes the quality of care.
               </p>
               <p>
                 Outside of medicine, Dr Ben Azouz has a long-standing passion for storytelling. He writes, works on
-                scripts and makes films, capturing human experience through creative expression. It is the same instinct
+                scripts, and makes films, capturing human experience through creative expression. It is the same instinct
                 that makes him listen carefully in the consulting room.
               </p>
             </div>

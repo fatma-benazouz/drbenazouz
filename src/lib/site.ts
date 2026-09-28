@@ -54,7 +54,7 @@ export const SERVICES: Service[] = [
   {
     slug: "metabolic-medicine",
     title: "Metabolic Medicine & Weight Management",
-    short: "Evidence-based weight management and metabolic care - treated as medicine, not willpower.",
+    short: "Evidence-based weight management and metabolic care.",
     icon: "activity",
     intro: [
       "Obesity and insulin resistance are chronic medical conditions, not personal failures. We assess the underlying metabolic picture - insulin, glucose, lipids, thyroid, hormones and medication effects - before recommending any treatment.",
@@ -70,7 +70,7 @@ export const SERVICES: Service[] = [
     ],
     seek: [
       "Weight has crept up steadily despite repeated attempts to change it",
-      "You have been told you are prediabetic or have raised blood sugar",
+      "You have been told (or suspect) you are prediabetic or have raised blood sugar",
       "Central weight gain with fatigue, cravings or afternoon energy crashes",
       "A family history of type 2 diabetes or metabolic syndrome",
     ],
@@ -78,7 +78,7 @@ export const SERVICES: Service[] = [
   {
     slug: "chronic-disease",
     title: "Chronic Disease Management",
-    short: "Consistent, monitored care for long-term conditions - with one doctor who knows your history.",
+    short: "Consistent, monitored care for long-term conditions with one doctor who knows your history.",
     icon: "heart-pulse",
     intro: [
       "Long-term conditions are best managed by a doctor who sees the whole picture over time. Regular review, accurate monitoring and small timely adjustments prevent the complications that come from drifting care.",
@@ -143,14 +143,14 @@ export const SERVICES: Service[] = [
     seek: [
       "You are due for a routine screening or Pap smear",
       "You want to review or change your contraception",
-      "Changes in urinary pattern, or pelvic or breast changes",
+      "Changes in urinary pattern, or pelvic / breast changes",
       "Reduced energy, libido or muscle mass that may be hormonal",
     ],
   },
   {
     slug: "mental-health",
     title: "Mental Health & Well-being",
-    short: "A safe, judgement-free space for stress, anxiety, low mood and sleep.",
+    short: "A safe, judgement-free space for assistance with stress, anxiety, low mood and sleep.",
     icon: "brain",
     intro: [
       "Mental and physical health are inseparable. Stress, anxiety and low mood show up as sleep disruption, blood pressure, weight change and fatigue - and they are treated as seriously as any other clinical problem here.",
@@ -174,7 +174,7 @@ export const SERVICES: Service[] = [
   {
     slug: "acute-urgent-care",
     title: "Acute & Urgent Care",
-    short: "Prompt attention for sudden illness and minor injury - without the hospital wait.",
+    short: "Prompt attention for sudden illness and minor injury, without the hospital wait.",
     icon: "stethoscope",
     intro: [
       "Sudden illness and minor injury need attention quickly, but rarely need an emergency department. Same-day and urgent appointments cover the ground between a routine check-up and hospital care.",
@@ -222,12 +222,12 @@ export const SERVICES: Service[] = [
   {
     slug: "iv-recovery-lounge",
     title: "IV & Recovery Lounge",
-    short: "Clinician-led wellness infusions and recovery support. Opening soon in Sandton.",
+    short: "Clinician-led wellness infusions and recovery support. Coming soon.",
     icon: "droplets",
     comingSoon: true,
     intro: [
       "A dedicated, doctor-supervised infusion lounge is opening at our Sandton rooms - for hydration, targeted micronutrient support and recovery after illness, travel or heavy training loads.",
-      "Every infusion will be prescribed after clinical assessment, not chosen from a menu. Join the waitlist and we will contact you when the lounge opens.",
+      "Every infusion will be prescribed after clinical assessment, not chosen from a menu.",
     ],
     covers: [
       "Hydration and electrolyte replacement",

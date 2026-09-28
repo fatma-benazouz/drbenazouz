@@ -29,16 +29,16 @@ export const Route = createFileRoute("/contact")({
 });
 
 const HOURS = [
-  { day: "Monday - Thursday", time: "08:00 - 13:00, 14:00 - 17:00" },
-  { day: "Friday", time: "08:00 - 13:00, 14:00 - 16:00" },
-  { day: "Saturday - Sunday", time: "Closed" },
+  { day: "Monday - Friday", time: "09:00 - 17:00" },
+  { day: "Saturday", time: "09:00 - 13:00" },
+  { day: "Sunday", time: "Closed" },
 ];
 
 function Contact() {
   return (
     <>
       <PageHero
-        title="Sandown, Sandton"
+        title="Sandown, Sandton Central"
         lead="Easy access. Premium environment. World-class care - in the heart of the business district."
       />
 
