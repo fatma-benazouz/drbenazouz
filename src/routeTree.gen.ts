@@ -24,6 +24,12 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
 import { Route as AuthenticatedAdminPatientsRouteImport } from './routes/_authenticated/admin/patients'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
+import { Route as AuthenticatedAdminAccountingIndexRouteImport } from './routes/_authenticated/admin/accounting/index'
+import { Route as AuthenticatedAdminAccountingEquipmentRouteImport } from './routes/_authenticated/admin/accounting/equipment'
+import { Route as AuthenticatedAdminAccountingExpensesRouteImport } from './routes/_authenticated/admin/accounting/expenses'
+import { Route as AuthenticatedAdminAccountingIncomeRouteImport } from './routes/_authenticated/admin/accounting/income'
+import { Route as AuthenticatedAdminAccountingRecurringRouteImport } from './routes/_authenticated/admin/accounting/recurring'
+import { Route as AuthenticatedAdminAccountingReportsRouteImport } from './routes/_authenticated/admin/accounting/reports'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -102,6 +108,42 @@ const AuthenticatedAdminSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAccountingIndexRoute =
+  AuthenticatedAdminAccountingIndexRouteImport.update({
+    id: '/accounting/',
+    path: '/accounting/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAccountingEquipmentRoute =
+  AuthenticatedAdminAccountingEquipmentRouteImport.update({
+    id: '/accounting/equipment',
+    path: '/accounting/equipment',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAccountingExpensesRoute =
+  AuthenticatedAdminAccountingExpensesRouteImport.update({
+    id: '/accounting/expenses',
+    path: '/accounting/expenses',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAccountingIncomeRoute =
+  AuthenticatedAdminAccountingIncomeRouteImport.update({
+    id: '/accounting/income',
+    path: '/accounting/income',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAccountingRecurringRoute =
+  AuthenticatedAdminAccountingRecurringRouteImport.update({
+    id: '/accounting/recurring',
+    path: '/accounting/recurring',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAccountingReportsRoute =
+  AuthenticatedAdminAccountingReportsRouteImport.update({
+    id: '/accounting/reports',
+    path: '/accounting/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -118,6 +160,12 @@ export interface FileRoutesByFullPath {
   '/admin/patients': typeof AuthenticatedAdminPatientsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
+  '/admin/accounting/expenses': typeof AuthenticatedAdminAccountingExpensesRoute
+  '/admin/accounting/income': typeof AuthenticatedAdminAccountingIncomeRoute
+  '/admin/accounting/recurring': typeof AuthenticatedAdminAccountingRecurringRoute
+  '/admin/accounting/reports': typeof AuthenticatedAdminAccountingReportsRoute
+  '/admin/accounting/': typeof AuthenticatedAdminAccountingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -133,6 +181,12 @@ export interface FileRoutesByTo {
   '/admin/patients': typeof AuthenticatedAdminPatientsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
+  '/admin/accounting/expenses': typeof AuthenticatedAdminAccountingExpensesRoute
+  '/admin/accounting/income': typeof AuthenticatedAdminAccountingIncomeRoute
+  '/admin/accounting/recurring': typeof AuthenticatedAdminAccountingRecurringRoute
+  '/admin/accounting/reports': typeof AuthenticatedAdminAccountingReportsRoute
+  '/admin/accounting': typeof AuthenticatedAdminAccountingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,6 +205,12 @@ export interface FileRoutesById {
   '/_authenticated/admin/patients': typeof AuthenticatedAdminPatientsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
+  '/_authenticated/admin/accounting/expenses': typeof AuthenticatedAdminAccountingExpensesRoute
+  '/_authenticated/admin/accounting/income': typeof AuthenticatedAdminAccountingIncomeRoute
+  '/_authenticated/admin/accounting/recurring': typeof AuthenticatedAdminAccountingRecurringRoute
+  '/_authenticated/admin/accounting/reports': typeof AuthenticatedAdminAccountingReportsRoute
+  '/_authenticated/admin/accounting/': typeof AuthenticatedAdminAccountingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,6 +229,12 @@ export interface FileRouteTypes {
     | '/admin/patients'
     | '/admin/settings'
     | '/admin/'
+    | '/admin/accounting/equipment'
+    | '/admin/accounting/expenses'
+    | '/admin/accounting/income'
+    | '/admin/accounting/recurring'
+    | '/admin/accounting/reports'
+    | '/admin/accounting/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -184,6 +250,12 @@ export interface FileRouteTypes {
     | '/admin/patients'
     | '/admin/settings'
     | '/admin'
+    | '/admin/accounting/equipment'
+    | '/admin/accounting/expenses'
+    | '/admin/accounting/income'
+    | '/admin/accounting/recurring'
+    | '/admin/accounting/reports'
+    | '/admin/accounting'
   id:
     | '__root__'
     | '/'
@@ -201,6 +273,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/patients'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/accounting/equipment'
+    | '/_authenticated/admin/accounting/expenses'
+    | '/_authenticated/admin/accounting/income'
+    | '/_authenticated/admin/accounting/recurring'
+    | '/_authenticated/admin/accounting/reports'
+    | '/_authenticated/admin/accounting/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -323,6 +401,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/accounting/': {
+      id: '/_authenticated/admin/accounting/'
+      path: '/accounting'
+      fullPath: '/admin/accounting/'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/accounting/equipment': {
+      id: '/_authenticated/admin/accounting/equipment'
+      path: '/accounting/equipment'
+      fullPath: '/admin/accounting/equipment'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingEquipmentRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/accounting/expenses': {
+      id: '/_authenticated/admin/accounting/expenses'
+      path: '/accounting/expenses'
+      fullPath: '/admin/accounting/expenses'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingExpensesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/accounting/income': {
+      id: '/_authenticated/admin/accounting/income'
+      path: '/accounting/income'
+      fullPath: '/admin/accounting/income'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingIncomeRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/accounting/recurring': {
+      id: '/_authenticated/admin/accounting/recurring'
+      path: '/accounting/recurring'
+      fullPath: '/admin/accounting/recurring'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingRecurringRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/accounting/reports': {
+      id: '/_authenticated/admin/accounting/reports'
+      path: '/accounting/reports'
+      fullPath: '/admin/accounting/reports'
+      preLoaderRoute: typeof AuthenticatedAdminAccountingReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
   }
 }
 
@@ -331,6 +451,12 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminPatientsRoute: typeof AuthenticatedAdminPatientsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminAccountingEquipmentRoute: typeof AuthenticatedAdminAccountingEquipmentRoute
+  AuthenticatedAdminAccountingExpensesRoute: typeof AuthenticatedAdminAccountingExpensesRoute
+  AuthenticatedAdminAccountingIncomeRoute: typeof AuthenticatedAdminAccountingIncomeRoute
+  AuthenticatedAdminAccountingRecurringRoute: typeof AuthenticatedAdminAccountingRecurringRoute
+  AuthenticatedAdminAccountingReportsRoute: typeof AuthenticatedAdminAccountingReportsRoute
+  AuthenticatedAdminAccountingIndexRoute: typeof AuthenticatedAdminAccountingIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
@@ -339,6 +465,18 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminPatientsRoute: AuthenticatedAdminPatientsRoute,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+    AuthenticatedAdminAccountingEquipmentRoute:
+      AuthenticatedAdminAccountingEquipmentRoute,
+    AuthenticatedAdminAccountingExpensesRoute:
+      AuthenticatedAdminAccountingExpensesRoute,
+    AuthenticatedAdminAccountingIncomeRoute:
+      AuthenticatedAdminAccountingIncomeRoute,
+    AuthenticatedAdminAccountingRecurringRoute:
+      AuthenticatedAdminAccountingRecurringRoute,
+    AuthenticatedAdminAccountingReportsRoute:
+      AuthenticatedAdminAccountingReportsRoute,
+    AuthenticatedAdminAccountingIndexRoute:
+      AuthenticatedAdminAccountingIndexRoute,
   }
 
 const AuthenticatedAdminRouteRouteWithChildren =

@@ -15,8 +15,8 @@ export function PageHeader({
   actions,
 }: {
   title: string;
-  description?: ReactNode;
-  actions?: ReactNode;
+  description?: ReactNode | undefined;
+  actions?: ReactNode | undefined;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
@@ -43,7 +43,7 @@ export function SearchField({
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <label className={cn("relative block", className)}>
@@ -72,8 +72,8 @@ export function IconButton({
 }: {
   label: string;
   onClick: () => void;
-  disabled?: boolean;
-  tone?: "default" | "danger";
+  disabled?: boolean | undefined;
+  tone?: "default" | "danger" | undefined;
   children: ReactNode;
 }) {
   return (
@@ -101,8 +101,8 @@ export function EmptyState({
 }: {
   icon: LucideIcon;
   title: string;
-  description?: string;
-  action?: ReactNode;
+  description?: string | undefined;
+  action?: ReactNode | undefined;
 }) {
   return (
     <div className="flex flex-col items-center px-6 py-14 text-center">

@@ -51,6 +51,28 @@ export default { StyleSheet, Document, Page, View, Text, Image, Font, pdf, usePD
   };
 }
 
+const EXCEL_STUB_ID = "\0exceljs-server-stub";
+
+/**
+ * ExcelJS powers the admin "Export to Excel" buttons, which only ever run in
+ * the browser. Like react-pdf, keep it out of the server bundle so the Worker
+ * stays under its size limit.
+ */
+function stubExcelOnServer(): Plugin {
+  return {
+    name: "stub-exceljs-on-server",
+    enforce: "pre",
+    resolveId(id, _importer, options) {
+      if (options?.ssr && id === "exceljs") return EXCEL_STUB_ID;
+      return null;
+    },
+    load(id) {
+      if (id !== EXCEL_STUB_ID) return null;
+      return `export default { Workbook: class { constructor() { throw new Error("Excel export is browser-only."); } } };`;
+    },
+  };
+}
+
 /**
  * `queue`, used by react-pdf's browser renderer, imports Node's bare `events`
  * module. The production build otherwise replaces it with an empty browser
@@ -81,7 +103,7 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
-    plugins: [stubReactPdfOnServer(), queueAliasForBuild()],
+    plugins: [stubReactPdfOnServer(), stubExcelOnServer(), queueAliasForBuild()],
     resolve: {
       alias: {
         events: "events/",

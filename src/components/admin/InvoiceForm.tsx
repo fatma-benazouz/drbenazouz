@@ -4,6 +4,7 @@ import { Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import brandLogo from "@/assets/dr-ben-azouz-dark-brand.png";
+import { syncInvoicePayments } from "@/components/admin/accounting/data";
 import { InvoiceDocument, type InvoiceDocData } from "@/components/admin/InvoiceDocument";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,12 +127,17 @@ export function InvoiceForm({
   const [saving, setSaving] = useState(false);
   const logoSrc = useMemo(() => {
     const src = settings.logo_url ?? brandLogo;
-    if (src.startsWith("/") && typeof window !== "undefined") return `${window.location.origin}${src}`;
+    if (src.startsWith("/") && typeof window !== "undefined")
+      return `${window.location.origin}${src}`;
     return src;
   }, [settings.logo_url]);
 
   const subtotal = useMemo(
-    () => draft.items.reduce((sum, item) => sum + toNumber(item.quantity) * toNumber(item.unit_price), 0),
+    () =>
+      draft.items.reduce(
+        (sum, item) => sum + toNumber(item.quantity) * toNumber(item.unit_price),
+        0,
+      ),
     [draft.items],
   );
   const isDue = draft.invoice_type === "payment_due";
@@ -219,18 +225,16 @@ export function InvoiceForm({
         .maybeSingle();
       if (existing) {
         applyPatient(existing as Patient);
-        toast.error(`${existing.full_name} already uses this email - the existing patient has been selected instead.`);
+        toast.error(
+          `${existing.full_name} already uses this email - the existing patient has been selected instead.`,
+        );
         return;
       }
     }
     const { data, error } = await supabase.from("patients").insert(payload).select("id").single();
     if (error) {
       const duplicate = error.code === "23505";
-      toast.error(
-        duplicate
-          ? "A patient with this email address already exists."
-          : error.message,
-      );
+      toast.error(duplicate ? "A patient with this email address already exists." : error.message);
       return;
     }
     setDraft({ ...draft, patient_id: data.id });
@@ -315,6 +319,18 @@ export function InvoiceForm({
       const { error: itemsError } = await supabase.from("invoice_items").insert(rows);
       if (itemsError) throw itemsError;
 
+      // Record the receipt's payment / restore paid status from recorded payments.
+      await syncInvoicePayments({
+        id: invoiceId!,
+        invoice_type: draft.invoice_type,
+        status,
+        subtotal,
+        date_paid: base.date_paid,
+        date_issued: draft.date_issued,
+        patient_id: draft.patient_id,
+        patient_name: base.patient_name,
+      });
+
       // Generate and store the final PDF
       const { pdf } = await import("@react-pdf/renderer");
       const blob = await pdf(
@@ -394,7 +410,9 @@ export function InvoiceForm({
               {search.trim() ? (
                 <ul className="mt-2 max-h-40 overflow-y-auto rounded-md border border-border">
                   {filteredPatients.length === 0 ? (
-                    <li className="px-3 py-2 text-sm text-muted-foreground">No match - fill the fields below and save as a new patient.</li>
+                    <li className="px-3 py-2 text-sm text-muted-foreground">
+                      No match - fill the fields below and save as a new patient.
+                    </li>
                   ) : null}
                   {filteredPatients.map((p) => (
                     <li key={p.id}>
@@ -414,14 +432,46 @@ export function InvoiceForm({
               ) : null}
 
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Field label="Full name" value={draft.patient_name} onChange={(v) => setDraft({ ...draft, patient_name: v })} />
-                <Field label="Email" value={draft.patient_email} onChange={(v) => setDraft({ ...draft, patient_email: v })} />
-                <Field label="Phone" value={draft.patient_phone} onChange={(v) => setDraft({ ...draft, patient_phone: v })} />
-                <Field label="Address" value={draft.patient_address} onChange={(v) => setDraft({ ...draft, patient_address: v })} />
-                <Field label="Medical aid" value={draft.medical_aid_name} onChange={(v) => setDraft({ ...draft, medical_aid_name: v })} />
-                <Field label="Plan" value={draft.medical_aid_plan} onChange={(v) => setDraft({ ...draft, medical_aid_plan: v })} />
-                <Field label="Member number" value={draft.medical_aid_member_number} onChange={(v) => setDraft({ ...draft, medical_aid_member_number: v })} />
-                <Field label="Dependant code" value={draft.dependant_code} onChange={(v) => setDraft({ ...draft, dependant_code: v })} />
+                <Field
+                  label="Full name"
+                  value={draft.patient_name}
+                  onChange={(v) => setDraft({ ...draft, patient_name: v })}
+                />
+                <Field
+                  label="Email"
+                  value={draft.patient_email}
+                  onChange={(v) => setDraft({ ...draft, patient_email: v })}
+                />
+                <Field
+                  label="Phone"
+                  value={draft.patient_phone}
+                  onChange={(v) => setDraft({ ...draft, patient_phone: v })}
+                />
+                <Field
+                  label="Address"
+                  value={draft.patient_address}
+                  onChange={(v) => setDraft({ ...draft, patient_address: v })}
+                />
+                <Field
+                  label="Medical aid"
+                  value={draft.medical_aid_name}
+                  onChange={(v) => setDraft({ ...draft, medical_aid_name: v })}
+                />
+                <Field
+                  label="Plan"
+                  value={draft.medical_aid_plan}
+                  onChange={(v) => setDraft({ ...draft, medical_aid_plan: v })}
+                />
+                <Field
+                  label="Member number"
+                  value={draft.medical_aid_member_number}
+                  onChange={(v) => setDraft({ ...draft, medical_aid_member_number: v })}
+                />
+                <Field
+                  label="Dependant code"
+                  value={draft.dependant_code}
+                  onChange={(v) => setDraft({ ...draft, dependant_code: v })}
+                />
               </div>
               <Button variant="outline" size="sm" className="mt-3" onClick={savePatient}>
                 <Plus className="h-4 w-4" /> Save as new patient
@@ -517,7 +567,9 @@ export function InvoiceForm({
                 variant="outline"
                 size="sm"
                 className="mt-3"
-                onClick={() => setDraft({ ...draft, items: [...draft.items, emptyItem(draft.items.length)] })}
+                onClick={() =>
+                  setDraft({ ...draft, items: [...draft.items, emptyItem(draft.items.length)] })
+                }
               >
                 <Plus className="h-4 w-4" /> Add another line
               </Button>

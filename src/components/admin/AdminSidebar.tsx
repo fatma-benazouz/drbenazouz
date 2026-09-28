@@ -1,12 +1,36 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, FileText, LogOut, Settings, Users, type LucideIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarClock,
+  FileBarChart,
+  FileText,
+  HandCoins,
+  LayoutDashboard,
+  LogOut,
+  Monitor,
+  Receipt,
+  Settings,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 import practiceLogo from "@/assets/practice-logo.png";
 
 type NavItem = {
-  to: "/admin/patients" | "/admin/invoices" | "/admin/settings";
+  to:
+    | "/admin/patients"
+    | "/admin/invoices"
+    | "/admin/accounting"
+    | "/admin/accounting/income"
+    | "/admin/accounting/expenses"
+    | "/admin/accounting/recurring"
+    | "/admin/accounting/equipment"
+    | "/admin/accounting/reports"
+    | "/admin/settings";
   label: string;
   icon: LucideIcon;
+  /** Only highlight on this exact page (not its sub-pages). */
+  exact?: boolean;
 };
 
 // Add new admin pages here (and as a file in src/routes/_authenticated/admin/).
@@ -16,6 +40,17 @@ const NAV: Array<{ label: string; items: NavItem[] }> = [
     items: [
       { to: "/admin/patients", label: "Patients", icon: Users },
       { to: "/admin/invoices", label: "Invoices", icon: FileText },
+    ],
+  },
+  {
+    label: "Accounting",
+    items: [
+      { to: "/admin/accounting", label: "Overview", icon: LayoutDashboard, exact: true },
+      { to: "/admin/accounting/income", label: "Income", icon: HandCoins },
+      { to: "/admin/accounting/expenses", label: "Expenses", icon: Receipt },
+      { to: "/admin/accounting/recurring", label: "Recurring costs", icon: CalendarClock },
+      { to: "/admin/accounting/equipment", label: "Equipment", icon: Monitor },
+      { to: "/admin/accounting/reports", label: "Reports", icon: FileBarChart },
     ],
   },
   {
@@ -40,7 +75,7 @@ export function AdminBrand() {
         <p className="truncate font-display text-[0.9375rem] leading-tight text-ink">
           Dr Ben Azouz MH
         </p>
-        <p className="truncate text-xs text-grey">Practice dashboard</p>
+        <p className="truncate text-xs text-grey">Practice Dashboard</p>
       </div>
     </div>
   );
@@ -68,11 +103,12 @@ export function AdminSidebar({
               {group.label}
             </p>
             <ul className="space-y-0.5">
-              {group.items.map(({ to, label, icon: Icon }) => (
+              {group.items.map(({ to, label, icon: Icon, exact }) => (
                 <li key={to}>
                   <Link
                     to={to}
                     onClick={onNavigate}
+                    activeOptions={{ exact: exact ?? false }}
                     className={itemClass}
                     activeProps={{
                       className: "border-blue bg-blue/[0.06] font-semibold text-blue",

@@ -4,6 +4,8 @@ import { Download, Eye, FileText, Pencil, Plus, Settings, Trash2, X } from "luci
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { useInvoices } from "@/components/admin/accounting/data";
+import { PaymentDialog } from "@/components/admin/accounting/PaymentDialog";
 import {
   InvoiceForm,
   blankDraft,
@@ -50,6 +52,7 @@ export function InvoiceList() {
   const [draft, setDraft] = useState<InvoiceDraft | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ number: string; url: string } | null>(null);
+  const [recording, setRecording] = useState<Invoice | null>(null);
 
   const previewUrlRef = useRef<string | null>(null);
   previewUrlRef.current = preview?.url ?? null;
@@ -82,26 +85,69 @@ export function InvoiceList() {
     },
   });
 
-  const invoices = useQuery({
-    queryKey: ["admin-invoices"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("invoices")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []).map((row) => ({
-        ...row,
-        subtotal: toNumber(row.subtotal),
-        paid_amount: toNumber(row.paid_amount),
-        total_due: toNumber(row.total_due),
-      })) as Invoice[];
-    },
-  });
+  const invoices = useInvoices();
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin-invoices"] });
     qc.invalidateQueries({ queryKey: ["admin-patients"] });
+    qc.invalidateQueries({ queryKey: ["accounting"] });
+  };
+
+  /**
+   * Received payments decide whether an invoice is paid. Payments created
+   * automatically from the invoice can be voided along with it; payments that
+   * were recorded by hand must be handled on the Income page first.
+   */
+  const releasePayments = async (invoice: Invoice, action: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("id, source")
+      .eq("invoice_id", invoice.id)
+      .eq("status", "received");
+    if (error) {
+      toast.error(error.message);
+      return false;
+    }
+    const rows = data ?? [];
+    if (rows.length === 0) return true;
+    if (rows.some((r) => r.source !== "invoice")) {
+      toast.error(
+        `${invoice.invoice_number} has payments recorded against it. Void them on the Income page before you ${action} it.`,
+      );
+      return false;
+    }
+    if (
+      !window.confirm(
+        `${invoice.invoice_number}'s recorded payment will be voided too, so it no longer counts as income. Continue?`,
+      )
+    )
+      return false;
+    const { error: voidError } = await supabase
+      .from("payments")
+      .update({ status: "void" })
+      .in(
+        "id",
+        rows.map((r) => r.id),
+      );
+    if (voidError) {
+      toast.error(voidError.message);
+      return false;
+    }
+    return true;
+  };
+
+  const changeStatus = async (invoice: Invoice, next: InvoiceStatus) => {
+    if (next === invoice.status) return;
+    // Paying an invoice means recording a payment; the invoice follows.
+    if (next === "paid" && invoice.total_due > 0) {
+      setRecording(invoice);
+      return;
+    }
+    if (invoice.status === "paid" || next === "void") {
+      const ok = await releasePayments(invoice, next === "void" ? "void" : "change");
+      if (!ok) return;
+    }
+    setStatus.mutate({ id: invoice.id, status: next });
   };
 
   const setStatus = useMutation({
@@ -209,7 +255,7 @@ export function InvoiceList() {
         `${invoice.invoice_number} is a finalised document. We recommend voiding it instead, which keeps the record and its number. Press OK to void it, or Cancel to consider deleting it permanently.`,
       );
       if (voidInstead) {
-        setStatus.mutate({ id: invoice.id, status: "void" });
+        await changeStatus(invoice, "void");
         return;
       }
       if (
@@ -220,6 +266,9 @@ export function InvoiceList() {
         return;
       if (!window.confirm("Final confirmation: delete this document for good?")) return;
     }
+    if (!(await releasePayments(invoice, "delete"))) return;
+    // Automatic payments belong to the document; remove them with it.
+    await supabase.from("payments").delete().eq("invoice_id", invoice.id).eq("source", "invoice");
     if (invoice.pdf_url) await supabase.storage.from("invoices").remove([invoice.pdf_url]);
     const { error } = await supabase.from("invoices").delete().eq("id", invoice.id);
     if (error) {
@@ -271,9 +320,7 @@ export function InvoiceList() {
     <select
       value={invoice.status}
       aria-label={`Status of ${invoice.invoice_number}`}
-      onChange={(e) =>
-        setStatus.mutate({ id: invoice.id, status: e.target.value as InvoiceStatus })
-      }
+      onChange={(e) => void changeStatus(invoice, e.target.value as InvoiceStatus)}
       className={cn(
         "h-7 cursor-pointer border px-2 text-xs font-semibold capitalize focus:outline-none focus:ring-2 focus:ring-blue/20",
         STATUS_STYLES[invoice.status],
@@ -477,6 +524,18 @@ export function InvoiceList() {
           settings={settings.data}
           onClose={() => setDraft(null)}
           onSaved={refresh}
+        />
+      ) : null}
+
+      {recording ? (
+        <PaymentDialog
+          payment={null}
+          prefill={{
+            invoice_id: recording.id,
+            patient_name: recording.patient_name,
+            amount: recording.total_due.toFixed(2),
+          }}
+          onClose={() => setRecording(null)}
         />
       ) : null}
 
