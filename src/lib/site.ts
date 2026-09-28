@@ -1,16 +1,54 @@
 export const PRACTICE = {
-  name: "Corporate Metabolic Clinic",
+  name: "Dr Ben Azouz MH - General Practitioner",
   doctor: "Dr Ben Azouz",
   tagline: "Your Health. Your Performance. Your Future.",
   strap: "A New Generation of General Practice",
-  addressLine1: "135 Daisy St",
-  addressLine2: "Sandown, Sandton, Johannesburg",
+  addressLine1: "135 Daisy Street",
+  addressLine2: "Sandown, Sandton 2031, Johannesburg, South Africa",
+  address: {
+    street: "135 Daisy Street",
+    suburb: "Sandown",
+    locality: "Sandton",
+    city: "Johannesburg",
+    region: "Gauteng",
+    postalCode: "2031",
+    country: "ZA",
+  },
+  area: "Sandown, Sandton",
+  geo: { latitude: -26.1010806, longitude: 28.0627914 },
+  mapsUrl: "https://maps.google.com/?cid=14035083543978014109",
   phone: "+27 63 662 9349",
   phoneHref: "tel:+27636629349",
   whatsapp: "27636629349",
   email: "contact@doctorbenazouz.co.za",
-  website: "www.metabolicclinic.co.za",
+  siteUrl: "https://doctorbenazouz.co.za",
+  // GoodX / myGC booking portal. Replace this single URL if the practice diary changes.
+  bookingUrl: "https://mygc.co.za//external/diary/4a5fea7d-be80-419a-a22f-9521ddc65f38",
 } as const;
+
+export const FULL_ADDRESS = `${PRACTICE.addressLine1}, ${PRACTICE.addressLine2}`;
+
+/** Consulting hours (SAST). `days` uses schema.org day names for structured data. */
+export const HOURS = [
+  {
+    label: "Monday - Friday",
+    time: "09:00 - 17:00",
+    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "09:00",
+    closes: "17:00",
+  },
+  { label: "Saturday", time: "09:00 - 13:00", days: ["Saturday"], opens: "09:00", closes: "13:00" },
+  { label: "Sunday", time: "Closed", days: [], opens: null, closes: null },
+] as const;
+
+/** Absolute URL on the production domain, for canonical tags, og:url and the sitemap. */
+export const absoluteUrl = (path: string) => `${PRACTICE.siteUrl}${path === "/" ? "/" : path}`;
+
+/** Canonical link + og:url for a page, to spread into a route's head(). */
+export const pageSeo = (path: string) => ({
+  links: [{ rel: "canonical", href: absoluteUrl(path) }],
+  meta: [{ property: "og:url", content: absoluteUrl(path) }],
+});
 
 export const whatsappLink = (message = "Hello, I'd like to enquire about an appointment.") =>
   `https://wa.me/${PRACTICE.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -78,7 +116,8 @@ export const SERVICES: Service[] = [
   {
     slug: "chronic-disease",
     title: "Chronic Disease Management",
-    short: "Consistent, monitored care for long-term conditions with one doctor who knows your history.",
+    short:
+      "Consistent, monitored care for long-term conditions with one doctor who knows your history.",
     icon: "heart-pulse",
     intro: [
       "Long-term conditions are best managed by a doctor who sees the whole picture over time. Regular review, accurate monitoring and small timely adjustments prevent the complications that come from drifting care.",
@@ -102,7 +141,8 @@ export const SERVICES: Service[] = [
   {
     slug: "preventive-travel",
     title: "Preventative & Travel Medicine",
-    short: "Stay ahead of illness at home and abroad - screening, vaccinations and travel planning.",
+    short:
+      "Stay ahead of illness at home and abroad - screening, vaccinations and travel planning.",
     icon: "plane",
     intro: [
       "Prevention is the least expensive medicine there is. Screening intervals are set against your age, family history and personal risk, so you are tested for what matters and spared what does not.",

@@ -6,6 +6,7 @@ import clinic from "@/assets/clinic-interior.jpg";
 import { CtaBand } from "@/components/site/CtaBand";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { pageSeo } from "@/lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -23,7 +24,9 @@ export const Route = createFileRoute("/about")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...pageSeo("/about").meta,
     ],
+    links: pageSeo("/about").links,
   }),
   component: About,
 });

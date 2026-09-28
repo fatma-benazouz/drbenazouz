@@ -5,7 +5,7 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { Button } from "@/components/ui/button";
-import { PRACTICE, whatsappLink } from "@/lib/site";
+import { FULL_ADDRESS, HOURS, PRACTICE, pageSeo, whatsappLink } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -14,25 +14,21 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Visit Dr Ben Azouz at 135 Daisy St, Sandown, Sandton, Johannesburg. Call, WhatsApp or email the practice, or book an appointment online.",
+          `Visit Dr Ben Azouz at ${FULL_ADDRESS}. Call, WhatsApp or email the practice, or book an appointment online.`,
       },
       { property: "og:title", content: "Contact the practice | Dr Ben Azouz" },
       {
         property: "og:description",
-        content: "135 Daisy St, Sandown, Sandton, Johannesburg. Call, WhatsApp or book online.",
+        content: `${FULL_ADDRESS}. Call, WhatsApp or book online.`,
       },
-       { property: "og:type", content: "website" },
-       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      ...pageSeo("/contact").meta,
     ],
+    links: pageSeo("/contact").links,
   }),
   component: Contact,
 });
-
-const HOURS = [
-  { day: "Monday - Friday", time: "09:00 - 17:00" },
-  { day: "Saturday", time: "09:00 - 13:00" },
-  { day: "Sunday", time: "Closed" },
-];
 
 function Contact() {
   return (
@@ -101,8 +97,8 @@ function Contact() {
                   <h2 className="text-sm font-semibold text-ink">Consulting hours (SAST)</h2>
                   <dl className="mt-1.5 space-y-1 text-[0.9rem] text-muted-foreground">
                     {HOURS.map((h) => (
-                      <div key={h.day} className="flex flex-wrap gap-x-3">
-                        <dt className="font-medium text-ink">{h.day}</dt>
+                      <div key={h.label} className="flex flex-wrap gap-x-3">
+                        <dt className="font-medium text-ink">{h.label}</dt>
                         <dd>{h.time}</dd>
                       </div>
                     ))}
@@ -124,8 +120,8 @@ function Contact() {
           <Reveal direction="right" delay={100}>
             <div className="overflow-hidden border border-border">
               <iframe
-                title="Map showing the practice at 135 Daisy St, Sandown, Sandton"
-                src="https://www.google.com/maps?q=135%20Daisy%20St%2C%20Sandown%2C%20Sandton%2C%20Johannesburg&output=embed"
+                title={`Map showing the practice at ${FULL_ADDRESS}`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(FULL_ADDRESS)}&output=embed`}
                 className="h-72 w-full border-0 lg:h-[24rem]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -135,8 +131,7 @@ function Contact() {
             <div className="mt-6 bg-blue p-6">
               <h2 className="text-2xl text-white">Book an appointment</h2>
               <p className="mt-3 text-sm leading-relaxed text-white/75">
-                Choose a date and time that suits you. Requests are reviewed by the practice and
-                confirmed by email.
+                Choose a date and time that suits you and book it straight into the practice diary.
               </p>
               <Button
                 asChild

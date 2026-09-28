@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CalendarDays, FileText, Inbox, LogOut, Plus, Settings2, Trash2, Users } from "lucide-react";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, CalendarDays, FileText, Inbox, LogOut, Plus, Settings2, Trash2, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Practice Dashboard | Corporate Metabolic Clinic" },
+      { title: "Practice Dashboard | Dr Ben Azouz MH" },
       { name: "description", content: "Manage bookings and availability." },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Practice Dashboard" },
@@ -171,11 +171,19 @@ function AdminPage() {
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 lg:px-8">
           <div className="min-w-0">
             <p className="eyebrow text-gold">Practice dashboard</p>
-            <h1 className="truncate font-display text-xl text-cream">Corporate Metabolic Clinic</h1>
+            <h1 className="truncate font-display text-xl text-cream">Dr Ben Azouz MH - General Practitioner</h1>
           </div>
-          <Button variant="goldOutline" size="sm" onClick={signOut}>
-            <LogOut className="h-4 w-4" /> Sign out
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="goldOutline" size="sm">
+              <Link to="/">
+                <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Return to site</span>
+                <span className="sr-only sm:hidden">Return to site</span>
+              </Link>
+            </Button>
+            <Button variant="goldOutline" size="sm" onClick={signOut}>
+              <LogOut className="h-4 w-4" /> Sign out
+            </Button>
+          </div>
         </div>
         <nav className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-3 lg:px-6" aria-label="Sections">
           {TABS.map(({ id, label, icon: Icon }) => (

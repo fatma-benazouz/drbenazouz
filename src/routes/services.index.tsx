@@ -4,7 +4,7 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { ServiceIcon } from "@/components/site/ServiceIcon";
-import { SERVICES } from "@/lib/site";
+import { SERVICES, pageSeo } from "@/lib/site";
 
 export const Route = createFileRoute("/services/")({
   head: () => ({
@@ -22,7 +22,9 @@ export const Route = createFileRoute("/services/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...pageSeo("/services").meta,
     ],
+    links: pageSeo("/services").links,
   }),
   component: ServicesHub,
 });

@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { PRACTICE } from "../lib/site";
+import { structuredData } from "../lib/structured-data";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { FloatingActions } from "@/components/site/FloatingActions";
@@ -80,13 +82,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dr Ben Azouz | Corporate Metabolic Clinic, Sandton" },
+      { title: "Dr Ben Azouz MH | General Practitioner in Sandton" },
       {
         name: "description",
         content:
           "Premium, personalised and preventative general practice in Sandton. Executive health, metabolic medicine and full family care with Dr Ben Azouz.",
       },
-      { name: "author", content: "Corporate Metabolic Clinic" },
+      { name: "author", content: PRACTICE.name },
+      { property: "og:site_name", content: PRACTICE.name },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -100,6 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify(structuredData) }],
   }),
   shellComponent: RootShell,
   component: RootComponent,

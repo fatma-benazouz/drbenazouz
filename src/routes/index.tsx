@@ -9,7 +9,7 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
 import { ServiceIcon } from "@/components/site/ServiceIcon";
 import { Button } from "@/components/ui/button";
-import { JOURNEY, PRACTICE, SERVICES } from "@/lib/site";
+import { JOURNEY, PRACTICE, SERVICES, pageSeo } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,11 +20,13 @@ export const Route = createFileRoute("/")({
         content:
           "Personalised, preventative general practice for executives, professionals and families in Sandton.",
       },
-      { property: "og:title", content: "Dr Ben Azouz | Corporate Metabolic Clinic" },
+      { property: "og:title", content: "Dr Ben Azouz MH | General Practitioner in Sandton" },
       { property: "og:description", content: "Modern general practice and metabolic care in Sandton." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...pageSeo("/").meta,
     ],
+    links: pageSeo("/").links,
   }),
   component: Home,
 });

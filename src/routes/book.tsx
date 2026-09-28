@@ -7,14 +7,12 @@ import step2 from "@/assets/tutorial-step2.webp";
 import step3 from "@/assets/tutorial-step3.webp";
 import step4 from "@/assets/tutorial-step4.webp";
 import { Reveal } from "@/components/site/Reveal";
+import { PRACTICE, pageSeo } from "@/lib/site";
 import { cn } from "@/lib/utils";
-
-// GoodX / myGC booking portal. Replace this single URL if the practice diary changes.
-const BOOKING_URL = "https://mygc.co.za//external/diary/4a5fea7d-be80-419a-a22f-9521ddc65f38";
 
 const TRUST = [
   "Evidence-based, patient-centred care",
-  "Confirmed by the practice within one working day",
+  "Booked straight into the practice diary",
   "Sandown, Sandton, Johannesburg",
 ];
 
@@ -41,7 +39,7 @@ const STEPS = [
     image: step4,
     alt: "The booking confirmation screen with an add to calendar button",
     title: "You're booked",
-    copy: "You'll see an instant confirmation and can add the appointment straight to your calendar. A confirmation email follows shortly after.",
+    copy: "Your appointment goes straight into the practice diary. You'll see a confirmation on screen, can add it to your calendar, and a confirmation email follows shortly after.",
   },
 ];
 
@@ -58,7 +56,7 @@ export const Route = createFileRoute("/book")({
       {
         name: "description",
         content:
-          "Book your appointment with Dr Ben Azouz in Sandton through our secure external booking portal. Live availability, instant confirmation, no account needed.",
+          "Book your appointment with Dr Ben Azouz in Sandton through our secure external booking portal. Live availability, booked straight into the practice diary, no account needed.",
       },
       { property: "og:title", content: "Book an Appointment | Dr Ben Azouz" },
       {
@@ -68,7 +66,9 @@ export const Route = createFileRoute("/book")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...pageSeo("/book").meta,
     ],
+    links: pageSeo("/book").links,
   }),
   component: BookPage,
 });
@@ -76,7 +76,7 @@ export const Route = createFileRoute("/book")({
 function BookNowButton({ className }: { className?: string }) {
   return (
     <a
-      href={BOOKING_URL}
+      href={PRACTICE.bookingUrl}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
@@ -144,7 +144,7 @@ function BookPage() {
             </h1>
             <p className="mt-5 max-w-xl text-[0.9rem] leading-relaxed text-grey">
               We use GoodX, a dedicated medical booking platform, to manage all appointments. Click through below to see
-              live availability and book instantly - no calling, no waiting for a callback.
+              live availability and book directly into the practice diary - no calling, no waiting for a callback.
             </p>
           </div>
 
@@ -237,9 +237,8 @@ function BookPage() {
 
           <div className="mt-12 border border-hairline bg-white p-6 sm:p-8">
             <p className="text-[0.875rem] leading-relaxed text-grey">
-              <span className="font-semibold text-blue">Note:</span> The practice reviews every request personally and
-              confirms by email, usually within one working day - the time slot you pick is a request, not an automatic
-              guarantee, until you receive that confirmation.
+              <span className="font-semibold text-blue">Note:</span> Your appointment is booked as soon as you confirm it. In the
+              rare case of a clash in the diary, the practice will contact you to arrange a suitable alternative time.
             </p>
           </div>
         </div>

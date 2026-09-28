@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
@@ -54,6 +55,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services': typeof ServicesIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/contact'
     | '/privacy'
+    | '/sitemap.xml'
     | '/admin'
     | '/services/$slug'
     | '/services/'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/contact'
     | '/privacy'
+    | '/sitemap.xml'
     | '/admin'
     | '/services/$slug'
     | '/services'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/contact'
     | '/privacy'
+    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/services/$slug'
     | '/services/'
@@ -150,6 +162,7 @@ export interface RootRouteChildren {
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ServicesSlugRoute: ServicesSlugRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }

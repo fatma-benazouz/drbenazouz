@@ -4,14 +4,14 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
 import { ServiceIcon } from "@/components/site/ServiceIcon";
 import { Button } from "@/components/ui/button";
-import { SERVICES } from "@/lib/site";
+import { SERVICES, pageSeo } from "@/lib/site";
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => { const service = SERVICES.find((s) => s.slug === params.slug); if (!service) throw notFound(); return { service }; },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Service not found" }, { name: "robots", content: "noindex" }] };
     const { service } = loaderData; const title = `${service.title} | Dr Ben Azouz, Sandton`;
-    return { meta: [{ title }, { name: "description", content: service.short }, { property: "og:title", content: title }, { property: "og:description", content: service.short }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] };
+    return { meta: [{ title }, { name: "description", content: service.short }, { property: "og:title", content: title }, { property: "og:description", content: service.short }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, ...pageSeo(`/services/${service.slug}`).meta], links: pageSeo(`/services/${service.slug}`).links };
   },
   notFoundComponent: () => <div className="mx-auto max-w-xl px-5 py-24"><h1 className="text-5xl text-ink">Service not found</h1><p className="mt-3 text-grey">That service page doesn't exist.</p><Button asChild className="mt-6"><Link to="/services">All services</Link></Button></div>,
   component: ServiceDetail,
@@ -39,7 +39,7 @@ function ServiceDetail() {
         </Reveal>
         <Reveal direction="right" delay={100}>
           {service.seek.length ? <div><h2 className="text-3xl text-ink sm:text-4xl">Consider booking if…</h2><ul className="mt-5 border-b border-hairline">{service.seek.map((item) => <li key={item} className="border-t border-hairline py-3 text-[0.8125rem] leading-relaxed text-grey">{item}</li>)}</ul></div> : null}
-          <div className="mt-9 bg-blue p-6 text-white"><h2 className="text-3xl text-white">{service.comingSoon ? "Book for a different service" : "Book for this service"}</h2><p className="mt-3 text-[0.8125rem] leading-relaxed text-white/75">{service.comingSoon ? "While you wait for the IV and recovery lounge to launch, book a consultation for a different service." : "Requests are reviewed by the practice and confirmed by email - usually within one working day."}</p><Button asChild variant="outline" size="lg" className="mt-5 h-10 w-full border-white bg-white px-6 text-[0.8125rem] text-blue transition-all hover:-translate-y-0.5"><Link to="/book" search={{ service: service.title }}>{service.comingSoon ? "Book a Consultation" : `Book ${service.title}`}</Link></Button></div>
+          <div className="mt-9 bg-blue p-6 text-white"><h2 className="text-3xl text-white">{service.comingSoon ? "Book for a different service" : "Book for this service"}</h2><p className="mt-3 text-[0.8125rem] leading-relaxed text-white/75">{service.comingSoon ? "While you wait for the IV and recovery lounge to launch, book a consultation for a different service." : "Book online in two minutes - your appointment goes straight into the practice diary."}</p><Button asChild variant="outline" size="lg" className="mt-5 h-10 w-full border-white bg-white px-6 text-[0.8125rem] text-blue transition-all hover:-translate-y-0.5"><Link to="/book" search={{ service: service.title }}>{service.comingSoon ? "Book a Consultation" : `Book ${service.title}`}</Link></Button></div>
         </Reveal>
       </div>
     </section>

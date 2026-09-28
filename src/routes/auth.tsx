@@ -14,7 +14,7 @@ import { adminExists, claimAdmin } from "@/lib/admin-bootstrap.functions";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Practice Sign In | Corporate Metabolic Clinic" },
+      { title: "Practice Sign In | Dr Ben Azouz MH" },
       { name: "description", content: "Secure sign-in for practice staff." },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Practice Sign In" },
