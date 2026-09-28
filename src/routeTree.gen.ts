@@ -17,9 +17,13 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
+import { Route as AuthenticatedAdminPatientsRouteImport } from './routes/_authenticated/admin/patients'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,7 +64,7 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
@@ -75,6 +79,29 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminInvoicesRoute =
+  AuthenticatedAdminInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPatientsRoute =
+  AuthenticatedAdminPatientsRouteImport.update({
+    id: '/patients',
+    path: '/patients',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,9 +111,13 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -96,9 +127,12 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin': typeof AuthenticatedAdminRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services': typeof ServicesIndexRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,9 +144,13 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/_authenticated/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +165,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/services/$slug'
     | '/services/'
+    | '/admin/invoices'
+    | '/admin/patients'
+    | '/admin/settings'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -136,9 +178,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/sitemap.xml'
-    | '/admin'
     | '/services/$slug'
     | '/services'
+    | '/admin/invoices'
+    | '/admin/patients'
+    | '/admin/settings'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -152,6 +197,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/services/$slug'
     | '/services/'
+    | '/_authenticated/admin/invoices'
+    | '/_authenticated/admin/patients'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -229,7 +278,7 @@ declare module '@tanstack/react-router' {
       id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/services/': {
@@ -246,15 +295,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/invoices': {
+      id: '/_authenticated/admin/invoices'
+      path: '/invoices'
+      fullPath: '/admin/invoices'
+      preLoaderRoute: typeof AuthenticatedAdminInvoicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/patients': {
+      id: '/_authenticated/admin/patients'
+      path: '/patients'
+      fullPath: '/admin/patients'
+      preLoaderRoute: typeof AuthenticatedAdminPatientsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
+  AuthenticatedAdminPatientsRoute: typeof AuthenticatedAdminPatientsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
+    AuthenticatedAdminPatientsRoute: AuthenticatedAdminPatientsRoute,
+    AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

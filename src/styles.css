@@ -34,6 +34,7 @@
   --color-ink: var(--ink);
   --color-grey: var(--grey);
   --color-hairline: var(--hairline);
+  --color-canvas: var(--canvas);
   --color-navy: var(--ink);
   --color-navy-deep: var(--ink);
   --color-navy-soft: var(--grey);
@@ -52,6 +53,7 @@
   --ink: #14171c;
   --grey: #5b6472;
   --hairline: #e4e6ea;
+  --canvas: #f6f7f9;
   --background: var(--white);
   --foreground: var(--ink);
   --card: var(--white);

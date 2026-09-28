@@ -1,6 +1,9 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "dev", "runtimeExecutable": "bun", "runtimeArgs": ["run", "dev"], "port": 8080 }
+    {
+      "name": "dev",
+      "url": "http://localhost:8080"
+    }
   ]
 }
