@@ -303,6 +303,7 @@ export type Database = {
           item_date: string
           quantity: number
           sort_order: number
+          tariff_code: string | null
           unit_price: number
         }
         Insert: {
@@ -314,6 +315,7 @@ export type Database = {
           item_date: string
           quantity?: number
           sort_order?: number
+          tariff_code?: string | null
           unit_price: number
         }
         Update: {
@@ -325,6 +327,7 @@ export type Database = {
           item_date?: string
           quantity?: number
           sort_order?: number
+          tariff_code?: string | null
           unit_price?: number
         }
         Relationships: [
@@ -545,6 +548,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      price_list_items: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          medical_aid_price: number | null
+          medical_aid_tariff_code: string | null
+          name: string
+          notes: string | null
+          private_price: number | null
+          private_tariff_code: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          medical_aid_price?: number | null
+          medical_aid_tariff_code?: string | null
+          name: string
+          notes?: string | null
+          private_price?: number | null
+          private_tariff_code?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          medical_aid_price?: number | null
+          medical_aid_tariff_code?: string | null
+          name?: string
+          notes?: string | null
+          private_price?: number | null
+          private_tariff_code?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       practice_settings: {
         Row: {

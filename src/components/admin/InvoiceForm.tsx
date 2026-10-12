@@ -1,15 +1,19 @@
 import { usePDF } from "@react-pdf/renderer";
-import { useEffect, useId, useMemo, useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { CheckCircle2, Plus, Trash2, UserPlus, X } from "lucide-react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import brandLogo from "@/assets/dr-ben-azouz-dark-brand.png";
 import { syncInvoicePayments } from "@/components/admin/accounting/data";
+import { inputClass, Segmented } from "@/components/admin/form";
+import { usePriceList } from "@/components/admin/price-list/data";
+import { PriceItemDialog } from "@/components/admin/price-list/PriceItemDialog";
+import { ServiceCombobox } from "@/components/admin/price-list/ServiceCombobox";
+import { parseAmount } from "@/lib/accounting";
+import { RATE_LABELS, defaultRate, priceFor, type PriceItem, type Rate } from "@/lib/priceList";
 import { InvoiceDocument, type InvoiceDocData } from "@/components/admin/InvoiceDocument";
+import { IconButton, SearchField } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import {
   addDaysIso,
@@ -24,6 +28,12 @@ import {
   type PracticeSettings,
 } from "@/lib/invoices";
 import { cn } from "@/lib/utils";
+
+/** An invoice line while editing; the price-list link is form state only (never saved). */
+export type DraftItem = InvoiceItem & {
+  price_item_id?: string | undefined;
+  rate?: Rate | undefined;
+};
 
 export type InvoiceDraft = {
   id?: string;
@@ -43,13 +53,14 @@ export type InvoiceDraft = {
   due_date: string;
   date_paid: string;
   admin_note: string;
-  items: InvoiceItem[];
+  items: DraftItem[];
 };
 
-export function emptyItem(sort: number): InvoiceItem {
+export function emptyItem(sort: number): DraftItem {
   return {
     item_date: todayIso(),
     description: "",
+    tariff_code: "",
     icd10_code: "",
     quantity: 1,
     unit_price: 0,
@@ -125,6 +136,11 @@ export function InvoiceForm({
 }) {
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
+  const priceList = usePriceList();
+  const priceItems = priceList.data ?? [];
+  const preferredRate = defaultRate(draft.medical_aid_name);
+  /** Index of the line being saved to the price list, if any. */
+  const [savingLineToList, setSavingLineToList] = useState<number | null>(null);
   const logoSrc = useMemo(() => {
     const src = settings.logo_url ?? brandLogo;
     if (src.startsWith("/") && typeof window !== "undefined")
@@ -242,9 +258,21 @@ export function InvoiceForm({
     onSaved();
   };
 
-  const setItem = (index: number, patch: Partial<InvoiceItem>) => {
+  const setItem = (index: number, patch: Partial<DraftItem>) => {
     const items = draft.items.map((item, i) => (i === index ? { ...item, ...patch } : item));
     setDraft({ ...draft, items });
+  };
+
+  /** Fill a line from a price-list service, at the given (or default) rate. */
+  const applyService = (index: number, service: PriceItem, rate: Rate = preferredRate) => {
+    const chosen = priceFor(service, rate);
+    setItem(index, {
+      description: service.name,
+      tariff_code: chosen.tariffCode ?? "",
+      unit_price: chosen.price,
+      price_item_id: service.id,
+      rate: chosen.rate,
+    });
   };
 
   const save = async (status: InvoiceStatus) => {
@@ -310,6 +338,7 @@ export function InvoiceForm({
           invoice_id: invoiceId!,
           item_date: item.item_date,
           description: item.description.trim(),
+          tariff_code: nullable(item.tariff_code ?? ""),
           icd10_code: nullable(item.icd10_code ?? ""),
           quantity: Math.max(1, Math.round(toNumber(item.quantity))),
           unit_price: toNumber(item.unit_price),
@@ -357,269 +386,423 @@ export function InvoiceForm({
     }
   };
 
+  const linkedPatient = draft.patient_id
+    ? (patients.find((p) => p.id === draft.patient_id) ?? null)
+    : null;
+  const set = (patch: Partial<InvoiceDraft>) => setDraft({ ...draft, ...patch });
+
   return (
-    <div className="fixed inset-0 z-50 flex bg-black/40" role="dialog" aria-modal="true">
-      <div className="ml-auto flex h-full w-full max-w-6xl flex-col bg-background shadow-2xl">
-        <header className="flex items-center justify-between border-b border-border px-5 py-4">
-          <div>
-            <h2 className="text-lg font-semibold text-navy-deep">
+    <div
+      className="fixed inset-0 z-50 flex bg-ink/40"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="invoice-form-title"
+    >
+      <div className="ml-auto flex h-full w-full max-w-7xl flex-col bg-white shadow-2xl">
+        <header className="flex items-start justify-between gap-4 border-b border-hairline px-6 py-4">
+          <div className="min-w-0">
+            <h2 id="invoice-form-title" className="font-display text-xl text-ink">
               {draft.id ? `Edit ${draft.invoice_number}` : "New billing document"}
             </h2>
-            <p className="text-xs text-muted-foreground">
-              Practice details, numbers and banking are filled in automatically.
+            <p className="mt-0.5 text-sm text-grey">
+              Practice details, document number and banking are filled in automatically.
             </p>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close">
+          <IconButton label="Close" onClick={onClose}>
             <X className="h-4 w-4" />
-          </Button>
+          </IconButton>
         </header>
 
-        <div className="grid min-h-0 flex-1 gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
-          <div className="min-h-0 overflow-y-auto px-5 py-5">
-            <div className="inline-flex rounded-md border border-border p-1">
-              {(
-                [
-                  ["payment_due", "Payment due"],
-                  ["paid_receipt", "Paid - medical aid receipt"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setDraft({ ...draft, invoice_type: value })}
-                  className={cn(
-                    "rounded px-3 py-1.5 text-sm font-medium transition-colors",
-                    draft.invoice_type === value
-                      ? "bg-navy text-cream"
-                      : "text-muted-foreground hover:text-navy-deep",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            <section className="mt-6">
-              <h3 className="text-sm font-semibold text-navy-deep">Patient</h3>
-              <Input
-                className="mt-2 h-9"
-                placeholder="Search existing patients…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+        <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+          <div className="min-h-0 overflow-y-auto px-6">
+            {/* 1. Document type */}
+            <FormSection title="Document type">
+              <Segmented
+                label="Document type"
+                value={draft.invoice_type}
+                onChange={(v) => set({ invoice_type: v })}
+                options={[
+                  { value: "payment_due", label: "Invoice · payment due" },
+                  { value: "paid_receipt", label: "Receipt · already paid" },
+                ]}
               />
-              {search.trim() ? (
-                <ul className="mt-2 max-h-40 overflow-y-auto rounded-md border border-border">
-                  {filteredPatients.length === 0 ? (
-                    <li className="px-3 py-2 text-sm text-muted-foreground">
-                      No match - fill the fields below and save as a new patient.
-                    </li>
-                  ) : null}
-                  {filteredPatients.map((p) => (
-                    <li key={p.id}>
-                      <button
-                        type="button"
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-secondary"
-                        onClick={() => applyPatient(p)}
-                      >
-                        {p.full_name}
-                        {p.medical_aid_name ? (
-                          <span className="text-muted-foreground"> · {p.medical_aid_name}</span>
-                        ) : null}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              <p className="mt-2 text-xs text-grey">
+                {isDue
+                  ? "For consultations still to be paid. Includes the practice's banking details."
+                  : "For consultations paid in full, so the patient can claim back from their medical aid."}
+              </p>
+            </FormSection>
 
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {/* 2. Patient */}
+            <FormSection
+              title="Patient"
+              action={
+                linkedPatient ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Linked to patient record
+                  </span>
+                ) : null
+              }
+            >
+              <div className="relative">
+                <SearchField
+                  value={search}
+                  onChange={setSearch}
+                  placeholder="Find an existing patient by name"
+                />
+                {search.trim() ? (
+                  <ul className="absolute inset-x-0 top-full z-10 mt-1 max-h-60 overflow-y-auto border border-hairline bg-white shadow-lg">
+                    {filteredPatients.length === 0 ? (
+                      <li className="px-4 py-3 text-sm text-grey">
+                        No match. Fill in the details below and save them as a new patient.
+                      </li>
+                    ) : null}
+                    {filteredPatients.map((p) => (
+                      <li key={p.id}>
+                        <button
+                          type="button"
+                          className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-canvas"
+                          onClick={() => applyPatient(p)}
+                        >
+                          <span className="font-medium text-ink">{p.full_name}</span>
+                          <span className="truncate text-xs text-grey">
+                            {p.medical_aid_name ?? p.email ?? ""}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <Field
                   label="Full name"
                   value={draft.patient_name}
-                  onChange={(v) => setDraft({ ...draft, patient_name: v })}
+                  onChange={(v) => set({ patient_name: v })}
+                  className="sm:col-span-2"
                 />
                 <Field
                   label="Email"
+                  type="email"
                   value={draft.patient_email}
-                  onChange={(v) => setDraft({ ...draft, patient_email: v })}
+                  onChange={(v) => set({ patient_email: v })}
                 />
                 <Field
                   label="Phone"
+                  type="tel"
                   value={draft.patient_phone}
-                  onChange={(v) => setDraft({ ...draft, patient_phone: v })}
+                  onChange={(v) => set({ patient_phone: v })}
                 />
                 <Field
                   label="Address"
                   value={draft.patient_address}
-                  onChange={(v) => setDraft({ ...draft, patient_address: v })}
+                  onChange={(v) => set({ patient_address: v })}
+                  className="sm:col-span-2"
                 />
+              </div>
+
+              <p className="mt-6 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-grey">
+                Medical aid
+              </p>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 <Field
-                  label="Medical aid"
+                  label="Scheme"
+                  placeholder="e.g. Discovery Health"
                   value={draft.medical_aid_name}
-                  onChange={(v) => setDraft({ ...draft, medical_aid_name: v })}
+                  onChange={(v) => set({ medical_aid_name: v })}
                 />
                 <Field
                   label="Plan"
                   value={draft.medical_aid_plan}
-                  onChange={(v) => setDraft({ ...draft, medical_aid_plan: v })}
+                  onChange={(v) => set({ medical_aid_plan: v })}
                 />
                 <Field
                   label="Member number"
                   value={draft.medical_aid_member_number}
-                  onChange={(v) => setDraft({ ...draft, medical_aid_member_number: v })}
+                  onChange={(v) => set({ medical_aid_member_number: v })}
                 />
                 <Field
                   label="Dependant code"
                   value={draft.dependant_code}
-                  onChange={(v) => setDraft({ ...draft, dependant_code: v })}
+                  onChange={(v) => set({ dependant_code: v })}
                 />
               </div>
-              <Button variant="outline" size="sm" className="mt-3" onClick={savePatient}>
-                <Plus className="h-4 w-4" /> Save as new patient
-              </Button>
-            </section>
 
-            <section className="mt-7">
-              <h3 className="text-sm font-semibold text-navy-deep">Dates</h3>
-              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              {!linkedPatient ? (
+                <Button variant="outline" size="sm" className="mt-4" onClick={savePatient}>
+                  <UserPlus /> Save as new patient
+                </Button>
+              ) : null}
+            </FormSection>
+
+            {/* 3. Dates */}
+            <FormSection title="Dates">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Field
                   label="Date issued"
                   type="date"
                   value={draft.date_issued}
-                  onChange={(v) => setDraft({ ...draft, date_issued: v })}
+                  onChange={(v) => set({ date_issued: v })}
                 />
                 {isDue ? (
                   <Field
                     label="Payment due"
                     type="date"
                     value={draft.due_date}
-                    onChange={(v) => setDraft({ ...draft, due_date: v })}
+                    onChange={(v) => set({ due_date: v })}
                   />
                 ) : (
                   <Field
                     label="Date paid"
                     type="date"
                     value={draft.date_paid}
-                    onChange={(v) => setDraft({ ...draft, date_paid: v })}
+                    onChange={(v) => set({ date_paid: v })}
                   />
                 )}
               </div>
-            </section>
+            </FormSection>
 
-            <section className="mt-7">
-              <h3 className="text-sm font-semibold text-navy-deep">Line items</h3>
-              <div className="mt-2 space-y-3">
-                {draft.items.map((item, index) => (
-                  <div key={index} className="rounded-md border border-border p-3">
-                    <div className="grid gap-3 sm:grid-cols-[minmax(0,140px)_minmax(0,1fr)]">
-                      <Field
-                        label="Date"
-                        type="date"
-                        value={item.item_date}
-                        onChange={(v) => setItem(index, { item_date: v })}
-                      />
-                      <Field
-                        label="Description"
-                        value={item.description}
-                        onChange={(v) => setItem(index, { description: v })}
-                      />
-                    </div>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-4">
-                      <Field
-                        label="ICD-10 (optional)"
-                        value={item.icd10_code ?? ""}
-                        onChange={(v) => setItem(index, { icd10_code: v })}
-                      />
-                      <Field
-                        label="Qty"
-                        type="number"
-                        value={String(item.quantity)}
-                        onChange={(v) => setItem(index, { quantity: toNumber(v) })}
-                      />
-                      <Field
-                        label="Unit price"
-                        type="number"
-                        value={String(item.unit_price)}
-                        onChange={(v) => setItem(index, { unit_price: toNumber(v) })}
-                      />
-                      <div>
-                        <Label className="text-xs">Amount</Label>
-                        <p className="mt-2 h-9 rounded-md border border-dashed border-border px-3 py-2 text-sm font-medium text-navy-deep">
-                          {money(toNumber(item.quantity) * toNumber(item.unit_price))}
-                        </p>
+            {/* 4. Line items */}
+            <FormSection
+              title="Line items"
+              description="Medical aids need the tariff code (the service) and the ICD-10 code (the diagnosis)."
+            >
+              <ol className="space-y-3">
+                {draft.items.map((item, index) => {
+                  const lineAmount = toNumber(item.quantity) * toNumber(item.unit_price);
+                  const linkedService = item.price_item_id
+                    ? priceItems.find((p) => p.id === item.price_item_id)
+                    : undefined;
+                  return (
+                    <li key={index} className="border border-hairline bg-white">
+                      <div className="flex items-center justify-between border-b border-hairline bg-canvas px-4 py-2">
+                        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-grey">
+                          Line {index + 1}
+                        </span>
+                        {draft.items.length > 1 ? (
+                          <IconButton
+                            label={`Remove line ${index + 1}`}
+                            tone="danger"
+                            onClick={() =>
+                              set({ items: draft.items.filter((_, i) => i !== index) })
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </IconButton>
+                        ) : null}
                       </div>
-                    </div>
-                    {draft.items.length > 1 ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="mt-2 text-destructive"
-                        onClick={() =>
-                          setDraft({ ...draft, items: draft.items.filter((_, i) => i !== index) })
-                        }
-                      >
-                        <Trash2 className="h-4 w-4" /> Remove line
-                      </Button>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-3"
-                onClick={() =>
-                  setDraft({ ...draft, items: [...draft.items, emptyItem(draft.items.length)] })
-                }
+                      <div className="grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_11rem]">
+                        <div className="min-w-0">
+                          <label
+                            htmlFor={`line-${index}-description`}
+                            className="block text-xs font-semibold text-ink"
+                          >
+                            Description
+                          </label>
+                          <div className="mt-2">
+                            <ServiceCombobox
+                              id={`line-${index}-description`}
+                              value={item.description}
+                              placeholder={
+                                priceItems.length
+                                  ? "Type to search your price list"
+                                  : "e.g. In-person GP consultation"
+                              }
+                              items={priceItems}
+                              preferredRate={preferredRate}
+                              onChange={(v) =>
+                                setItem(index, {
+                                  description: v,
+                                  price_item_id: undefined,
+                                  rate: undefined,
+                                })
+                              }
+                              onPick={(service) => applyService(index, service)}
+                            />
+                          </div>
+                          {linkedService &&
+                          linkedService.private_price != null &&
+                          linkedService.medical_aid_price != null ? (
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              <span className="text-xs text-grey">Rate</span>
+                              <div
+                                className="flex border border-hairline"
+                                role="radiogroup"
+                                aria-label={`Rate for line ${index + 1}`}
+                              >
+                                {(["private", "medical_aid"] as const).map((rate) => {
+                                  const option = priceFor(linkedService, rate);
+                                  return (
+                                    <button
+                                      key={rate}
+                                      type="button"
+                                      role="radio"
+                                      aria-checked={item.rate === rate}
+                                      onClick={() => applyService(index, linkedService, rate)}
+                                      className={cn(
+                                        "h-8 border-r border-hairline px-3 text-xs transition-colors last:border-r-0",
+                                        item.rate === rate
+                                          ? "bg-ink text-white"
+                                          : "text-grey hover:bg-canvas hover:text-ink",
+                                      )}
+                                    >
+                                      {RATE_LABELS[rate]} · {option.tariffCode ?? "no code"} ·{" "}
+                                      {money(option.price)}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : null}
+                          {!item.price_item_id &&
+                          item.description.trim() &&
+                          toNumber(item.unit_price) > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => setSavingLineToList(index)}
+                              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue hover:underline"
+                            >
+                              <Plus className="h-3.5 w-3.5" /> Save to price list
+                            </button>
+                          ) : null}
+                        </div>
+                        <Field
+                          label="Date of service"
+                          type="date"
+                          value={item.item_date}
+                          onChange={(v) => setItem(index, { item_date: v })}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 px-4 pb-4 sm:grid-cols-[repeat(2,minmax(0,1fr))_4.5rem_minmax(0,1.2fr)]">
+                        <Field
+                          label="Tariff code"
+                          placeholder="e.g. 0190"
+                          value={item.tariff_code ?? ""}
+                          onChange={(v) => setItem(index, { tariff_code: v })}
+                        />
+                        <Field
+                          label="ICD-10"
+                          placeholder="e.g. I10"
+                          value={item.icd10_code ?? ""}
+                          onChange={(v) => setItem(index, { icd10_code: v.toUpperCase() })}
+                        />
+                        <Field
+                          label="Qty"
+                          type="number"
+                          min={1}
+                          value={item.quantity ? String(item.quantity) : ""}
+                          onChange={(v) => setItem(index, { quantity: toNumber(v) })}
+                        />
+                        <PriceField
+                          label="Unit price"
+                          value={toNumber(item.unit_price)}
+                          onChange={(v) => setItem(index, { unit_price: v })}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between border-t border-hairline px-4 py-2.5 text-sm">
+                        <span className="text-grey">Line total</span>
+                        <span className="font-semibold tabular-nums text-ink">
+                          {money(lineAmount)}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <button
+                type="button"
+                onClick={() => set({ items: [...draft.items, emptyItem(draft.items.length)] })}
+                className="mt-3 flex h-11 w-full items-center justify-center gap-2 border border-dashed border-hairline text-sm font-semibold text-blue transition-colors hover:border-blue hover:bg-blue/[0.04] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
               >
                 <Plus className="h-4 w-4" /> Add another line
-              </Button>
+              </button>
 
-              <div className="mt-4 flex justify-end gap-8 border-t border-border pt-4 text-sm">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span className="font-semibold text-navy-deep">{money(subtotal)}</span>
-              </div>
-              <div className="mt-1 flex justify-end gap-8 text-sm">
-                <span className="text-muted-foreground">{isDue ? "Amount due" : "Balance"}</span>
-                <span className="font-semibold text-navy-deep">{money(totalDue)}</span>
-              </div>
-            </section>
+              <dl className="mt-5 ml-auto w-full max-w-xs border border-hairline bg-canvas px-4 py-3 text-sm">
+                <div className="flex justify-between py-1">
+                  <dt className="text-grey">Subtotal</dt>
+                  <dd className="tabular-nums text-ink">{money(subtotal)}</dd>
+                </div>
+                {!isDue ? (
+                  <div className="flex justify-between py-1">
+                    <dt className="text-grey">Paid by patient</dt>
+                    <dd className="tabular-nums text-ink">{money(paidAmount)}</dd>
+                  </div>
+                ) : null}
+                <div className="mt-1 flex justify-between border-t border-hairline pt-2 font-semibold text-ink">
+                  <dt>{isDue ? "Amount due" : "Balance"}</dt>
+                  <dd className="tabular-nums">{money(totalDue)}</dd>
+                </div>
+              </dl>
+            </FormSection>
 
-            <section className="mt-7">
-              <Label htmlFor="adminNote" className="text-xs">
-                Internal note (not shown on the document)
-              </Label>
-              <Textarea
-                id="adminNote"
-                className="mt-2"
-                rows={2}
+            {/* 5. Internal note */}
+            <FormSection
+              title="Internal note"
+              description="Only visible to the practice. Not printed on the document."
+            >
+              <textarea
+                aria-label="Internal note"
+                rows={3}
                 value={draft.admin_note}
-                onChange={(e) => setDraft({ ...draft, admin_note: e.target.value })}
+                onChange={(e) => set({ admin_note: e.target.value })}
+                className={cn(inputClass, "h-auto py-2.5")}
               />
-            </section>
+            </FormSection>
           </div>
 
-          <aside className="hidden min-h-0 flex-col border-l border-border bg-secondary/40 lg:flex">
-            <p className="border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
-              Live preview
-            </p>
+          <aside className="hidden min-h-0 flex-col border-l border-hairline bg-canvas lg:flex">
+            <div className="flex items-center justify-between border-b border-hairline px-5 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-grey">
+                Live preview
+              </p>
+              <p className="text-xs text-grey">Updates as you type</p>
+            </div>
             <div className="min-h-0 flex-1">
               {instance.url ? (
                 <iframe title="Invoice preview" src={instance.url} className="h-full w-full" />
               ) : (
-                <p className="p-4 text-sm text-muted-foreground">Building preview…</p>
+                <p className="p-5 text-sm text-grey">Building preview…</p>
               )}
             </div>
           </aside>
         </div>
 
-        <footer className="flex flex-wrap items-center justify-end gap-3 border-t border-border px-5 py-4">
-          <Button variant="ghost" onClick={onClose} disabled={saving}>
+        {savingLineToList != null && draft.items[savingLineToList] ? (
+          <PriceItemDialog
+            item={null}
+            prefill={(() => {
+              const line = draft.items[savingLineToList]!;
+              const code = line.tariff_code ?? "";
+              const price = toNumber(line.unit_price).toFixed(2);
+              return preferredRate === "medical_aid"
+                ? {
+                    name: line.description.trim(),
+                    medical_aid_tariff_code: code,
+                    medical_aid_price: price,
+                  }
+                : {
+                    name: line.description.trim(),
+                    private_tariff_code: code,
+                    private_price: price,
+                  };
+            })()}
+            onClose={() => setSavingLineToList(null)}
+            onSaved={(saved) =>
+              setItem(savingLineToList, { price_item_id: saved.id, rate: preferredRate })
+            }
+          />
+        ) : null}
+
+        <footer className="flex flex-wrap items-center justify-end gap-3 border-t border-hairline bg-canvas px-6 py-4">
+          <Button variant="outline" className="mr-auto" onClick={onClose} disabled={saving}>
             Cancel
           </Button>
           <Button variant="outline" onClick={() => save("draft")} disabled={saving}>
             Save as draft
           </Button>
-          <Button variant="navy" onClick={() => save(isDue ? "sent" : "paid")} disabled={saving}>
+          <Button onClick={() => save(isDue ? "sent" : "paid")} disabled={saving}>
             {saving ? "Generating…" : isDue ? "Generate invoice" : "Generate receipt"}
           </Button>
         </footer>
@@ -628,31 +811,127 @@ export function InvoiceForm({
   );
 }
 
+function FormSection({
+  title,
+  description,
+  action,
+  children,
+}: {
+  title: string;
+  description?: string | undefined;
+  action?: ReactNode | undefined;
+  children: ReactNode;
+}) {
+  return (
+    <section className="border-b border-hairline py-6 last:border-b-0">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-display text-base text-ink">{title}</h3>
+          {description ? <p className="mt-0.5 text-xs text-grey">{description}</p> : null}
+        </div>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
 function Field({
   label,
   value,
   onChange,
   type = "text",
+  placeholder,
+  prefix,
+  className,
+  min,
+  step,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  type?: string;
+  type?: string | undefined;
+  placeholder?: string | undefined;
+  /** Short text shown inside the input, e.g. "R". */
+  prefix?: string | undefined;
+  className?: string | undefined;
+  min?: number | undefined;
+  step?: string | undefined;
 }) {
   const uid = useId();
   const id = `${uid}-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
-    <div>
-      <Label htmlFor={id} className="text-xs">
+    <div className={cn("min-w-0", className)}>
+      <label htmlFor={id} className="block text-xs font-semibold text-ink">
         {label}
-      </Label>
-      <Input
-        id={id}
-        className="mt-2 h-9"
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
+      </label>
+      <div className="relative mt-2">
+        {prefix ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-grey">
+            {prefix}
+          </span>
+        ) : null}
+        <input
+          id={id}
+          type={type}
+          value={value}
+          placeholder={placeholder}
+          min={min}
+          step={step}
+          inputMode={type === "number" ? "decimal" : undefined}
+          onChange={(e) => onChange(e.target.value)}
+          className={cn(inputClass, prefix && "pl-7", type === "number" && "tabular-nums")}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Rand amount input. Keeps what's typed (so "620,30" or "620.3" both work) and
+ * tidies it to two decimals, e.g. "620.30", when the field loses focus.
+ */
+function PriceField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const uid = useId();
+  const id = `${uid}-price`;
+  const [text, setText] = useState(value ? value.toFixed(2) : "");
+  const [focused, setFocused] = useState(false);
+  const shown = focused ? text : value ? value.toFixed(2) : "";
+  return (
+    <div className="min-w-0">
+      <label htmlFor={id} className="block text-xs font-semibold text-ink">
+        {label}
+      </label>
+      <div className="relative mt-2">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-grey">
+          R
+        </span>
+        <input
+          id={id}
+          inputMode="decimal"
+          autoComplete="off"
+          placeholder="0.00"
+          value={shown}
+          onFocus={() => {
+            setText(value ? value.toFixed(2) : "");
+            setFocused(true);
+          }}
+          onBlur={() => setFocused(false)}
+          onChange={(e) => {
+            setText(e.target.value);
+            onChange(parseAmount(e.target.value) ?? 0);
+          }}
+          className={cn(inputClass, "pl-7 tabular-nums")}
+        />
+      </div>
     </div>
   );
 }

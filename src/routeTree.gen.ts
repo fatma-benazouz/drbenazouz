@@ -23,6 +23,7 @@ import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
 import { Route as AuthenticatedAdminPatientsRouteImport } from './routes/_authenticated/admin/patients'
+import { Route as AuthenticatedAdminPriceListRouteImport } from './routes/_authenticated/admin/price-list'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminAccountingIndexRouteImport } from './routes/_authenticated/admin/accounting/index'
 import { Route as AuthenticatedAdminAccountingEquipmentRouteImport } from './routes/_authenticated/admin/accounting/equipment'
@@ -102,6 +103,12 @@ const AuthenticatedAdminPatientsRoute =
     path: '/patients',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminPriceListRoute =
+  AuthenticatedAdminPriceListRouteImport.update({
+    id: '/price-list',
+    path: '/price-list',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminSettingsRoute =
   AuthenticatedAdminSettingsRouteImport.update({
     id: '/settings',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/services/': typeof ServicesIndexRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/admin/price-list': typeof AuthenticatedAdminPriceListRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
@@ -179,6 +187,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesIndexRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/admin/price-list': typeof AuthenticatedAdminPriceListRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/patients': typeof AuthenticatedAdminPatientsRoute
+  '/_authenticated/admin/price-list': typeof AuthenticatedAdminPriceListRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/accounting/equipment': typeof AuthenticatedAdminAccountingEquipmentRoute
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/admin/invoices'
     | '/admin/patients'
+    | '/admin/price-list'
     | '/admin/settings'
     | '/admin/'
     | '/admin/accounting/equipment'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/admin/invoices'
     | '/admin/patients'
+    | '/admin/price-list'
     | '/admin/settings'
     | '/admin'
     | '/admin/accounting/equipment'
@@ -271,6 +283,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/patients'
+    | '/_authenticated/admin/price-list'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/accounting/equipment'
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPatientsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/price-list': {
+      id: '/_authenticated/admin/price-list'
+      path: '/price-list'
+      fullPath: '/admin/price-list'
+      preLoaderRoute: typeof AuthenticatedAdminPriceListRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/settings': {
       id: '/_authenticated/admin/settings'
       path: '/settings'
@@ -449,6 +469,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminPatientsRoute: typeof AuthenticatedAdminPatientsRoute
+  AuthenticatedAdminPriceListRoute: typeof AuthenticatedAdminPriceListRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminAccountingEquipmentRoute: typeof AuthenticatedAdminAccountingEquipmentRoute
@@ -463,6 +484,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
   {
     AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
     AuthenticatedAdminPatientsRoute: AuthenticatedAdminPatientsRoute,
+    AuthenticatedAdminPriceListRoute: AuthenticatedAdminPriceListRoute,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
     AuthenticatedAdminAccountingEquipmentRoute:

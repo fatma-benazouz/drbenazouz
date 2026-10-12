@@ -10,6 +10,7 @@ import {
   Monitor,
   Receipt,
   Settings,
+  Tags,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -20,6 +21,7 @@ type NavItem = {
   to:
     | "/admin/patients"
     | "/admin/invoices"
+    | "/admin/price-list"
     | "/admin/accounting"
     | "/admin/accounting/income"
     | "/admin/accounting/expenses"
@@ -40,6 +42,7 @@ const NAV: Array<{ label: string; items: NavItem[] }> = [
     items: [
       { to: "/admin/patients", label: "Patients", icon: Users },
       { to: "/admin/invoices", label: "Invoices", icon: FileText },
+      { to: "/admin/price-list", label: "Price list", icon: Tags },
     ],
   },
   {

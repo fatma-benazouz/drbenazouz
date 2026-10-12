@@ -41,6 +41,9 @@ export type InvoiceItem = {
   id?: string;
   item_date: string;
   description: string;
+  /** Procedure code medical schemes pay on, e.g. 0190 / 0191 for a GP consultation. */
+  tariff_code: string | null;
+  /** Diagnosis code, e.g. I10. */
   icd10_code: string | null;
   quantity: number;
   unit_price: number;

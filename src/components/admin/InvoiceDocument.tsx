@@ -87,12 +87,13 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: HAIRLINE,
   },
-  cDate: { width: "15%" },
-  cDesc: { width: "39%", paddingRight: 8 },
-  cCode: { width: "14%" },
-  cQty: { width: "8%", textAlign: "right" },
-  cUnit: { width: "12%", textAlign: "right" },
-  cAmt: { width: "12%", textAlign: "right" },
+  cDate: { width: "12%" },
+  cDesc: { width: "30%", paddingRight: 8 },
+  cTariff: { width: "14%", paddingRight: 6 },
+  cCode: { width: "10%" },
+  cQty: { width: "6%", textAlign: "right" },
+  cUnit: { width: "14%", textAlign: "right" },
+  cAmt: { width: "14%", textAlign: "right" },
   totals: { marginTop: 16, alignSelf: "flex-end", width: 240 },
   totalRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 5 },
   totalLabel: { fontSize: 9, color: GREY },
@@ -230,7 +231,8 @@ export function InvoiceDocument({
         <View style={s.tableHead}>
           <Text style={s.cDate}>DATE</Text>
           <Text style={s.cDesc}>DESCRIPTION</Text>
-          <Text style={s.cCode}>CODE</Text>
+          <Text style={s.cTariff}>TARIFF CODE</Text>
+          <Text style={s.cCode}>ICD-10</Text>
           <Text style={s.cQty}>QTY</Text>
           <Text style={s.cUnit}>UNIT PRICE</Text>
           <Text style={s.cAmt}>AMOUNT</Text>
@@ -240,6 +242,7 @@ export function InvoiceDocument({
           <View key={index} style={s.row} wrap={false}>
             <Text style={s.cDate}>{formatShortDate(item.item_date)}</Text>
             <Text style={s.cDesc}>{item.description}</Text>
+            <Text style={s.cTariff}>{item.tariff_code ?? ""}</Text>
             <Text style={s.cCode}>{item.icd10_code ?? ""}</Text>
             <Text style={s.cQty}>{item.quantity}</Text>
             <Text style={s.cUnit}>{money(item.unit_price)}</Text>
@@ -301,9 +304,10 @@ export function InvoiceDocument({
           <View style={s.panel}>
             <Text style={s.panelTitle}>FOR MEDICAL AID REIMBURSEMENT</Text>
             <Text style={[s.infoText, { marginTop: 8 }]}>
-              This account has been settled in full by the patient. Please use the code(s) and practice/provider numbers
-              above to submit this receipt to your medical aid for reimbursement. Reimbursement will be paid directly to
-              the patient by the medical aid.
+              This account has been settled in full by the patient. Please use the tariff code,
+              ICD-10 code and practice/provider numbers above to submit this receipt to your medical
+              aid for reimbursement. Reimbursement will be paid directly to the patient by the
+              medical aid.
             </Text>
           </View>
         )}
